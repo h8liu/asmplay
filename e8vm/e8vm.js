@@ -19094,7 +19094,7 @@ $packages["/home/h8liu/asmplay/e8vm"] = (function() {
 		_i$1 = 0;
 		while (_i$1 < _ref$1.$length) {
 			line = ((_i$1 < 0 || _i$1 >= _ref$1.$length) ? $throwRuntimeError("index out of range") : _ref$1.$array[_ref$1.$offset + _i$1]);
-			fmt.Fprintf(out, "<div class=\"dasm\">%s</div>\n", new ($sliceType($emptyInterface))([new $String(template.HTMLEscapeString(line.String()))]));
+			fmt.Fprintf(out, "%s\n", new ($sliceType($emptyInterface))([new $String(template.HTMLEscapeString(line.String()))]));
 			_i$1++;
 		}
 		_tmp$2 = out.String(); _tmp$3 = ""; dump = _tmp$2; errs = _tmp$3;

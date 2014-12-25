@@ -25,6 +25,11 @@ pre, code {
     font-size: 13px;
 }
 
+pre {
+    margin: 0;
+    padding: 0;
+}
+
 #container {
     margin-top: .2in;
 	margin-left: calc(50% - .1in - 300px);

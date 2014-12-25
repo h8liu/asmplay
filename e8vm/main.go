@@ -51,7 +51,7 @@ func _compile(file, code string) (dump, errs string) {
 
 	lines := dasm8.Dasm(bs, arch8.InitPC)
 	for _, line := range lines {
-		fmt.Fprintf(out, `<div class="dasm">%s</div>` + "\n",
+		fmt.Fprintf(out, `%s` + "\n",
 			template.HTMLEscapeString(line.String()),
 		)
 	}
