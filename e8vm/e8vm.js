@@ -17122,7 +17122,7 @@ $packages["math/rand"] = (function() {
 	return $pkg;
 })();
 $packages["lonnie.io/e8vm/arch8"] = (function() {
-	var $pkg = {}, errors = $packages["errors"], math = $packages["math"], io = $packages["io"], binary = $packages["encoding/binary"], os = $packages["os"], bytes = $packages["bytes"], log = $packages["log"], rand = $packages["math/rand"], time = $packages["time"], Excep, IntBus, Page, Serial, errHalt, errTimeInt, errInvalidInst, errOutOfRange, errMisalign, NewExcep, wordOff;
+	var $pkg = {}, errors = $packages["errors"], math = $packages["math"], io = $packages["io"], fmt = $packages["fmt"], binary = $packages["encoding/binary"], os = $packages["os"], bytes = $packages["bytes"], log = $packages["log"], rand = $packages["math/rand"], time = $packages["time"], Excep, IntBus, Page, Serial, errHalt, errTimeInt, errInvalidInst, errOutOfRange, errMisalign, NewExcep, wordOff;
 	Excep = $pkg.Excep = $newType(0, "Struct", "arch8.Excep", "Excep", "lonnie.io/e8vm/arch8", function(Code_, Arg_, Err_) {
 		this.$val = this;
 		this.Code = Code_ !== undefined ? Code_ : 0;
@@ -17605,7 +17605,7 @@ $packages["lonnie.io/e8vm/lex8"] = (function() {
 	return $pkg;
 })();
 $packages["lonnie.io/e8vm/asm8"] = (function() {
-	var $pkg = {}, io = $packages["io"], lex8 = $packages["lonnie.io/e8vm/lex8"], strconv = $packages["strconv"], strings = $packages["strings"], bytes = $packages["bytes"], binary = $packages["encoding/binary"], Builder, inst, Func, instParse, instParsers, stmt, Parser, StmtLexer, SymScope, SymTable, Symbol, writer, insts, opBrMap, opImsMap, opImuMap, opImmMap, opShiftMap, opReg3Map, opReg2Map, opFloatMap, opSysMap, opSys1Map, regNameMap, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$5, _key$5, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, _map$11, _key$11, BuildBareFunc, buildFunc, declareLabels, setStmtOffset, fillDelta, fillStmtLabels, newBuilder, isJump, inBrRange, parseInst, makeInstBr, parseInstBr, parseImu, parseIms, parseImm, makeInstImm, parseInstImm, parseInstJmp, parseShift, makeInstReg, parseInstReg, makeInstSys, parseInstSys, lexAsm8, NewLexer, lexComment, lexLineComment, lexBlockComment, isOperandChar, isKeyword, lexOperand, lexString, argCount, parseBareFunc, isLabelStart, isLabel, parseLabel, parseOps, parseReg, parseStmt, isSymbol, isIdent, isPackName, parseSym, newParser, typeStr, NewStmtLexer, NewSymScope, NewSymTable, symStr, newWriter;
+	var $pkg = {}, io = $packages["io"], lex8 = $packages["lonnie.io/e8vm/lex8"], strconv = $packages["strconv"], strings = $packages["strings"], bytes = $packages["bytes"], binary = $packages["encoding/binary"], Builder, inst, Func, instParse, instParsers, stmt, Parser, StmtLexer, SymScope, SymTable, Symbol, writer, insts, opBrMap, opImsMap, opMemMap, opImuMap, opImmMap, opShiftMap, opReg3Map, opReg2Map, opFloatMap, opSysMap, opSys1Map, regNameMap, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, _map$11, _key$11, _map$12, _key$12, BuildBareFunc, buildFunc, declareLabels, setStmtOffset, fillDelta, fillStmtLabels, newBuilder, isJump, inBrRange, parseInst, makeInstBr, parseInstBr, parseImu, parseIms, parseImm, makeInstImm, parseInstImm, parseInstJmp, parseShift, makeInstReg, parseInstReg, makeInstSys, parseInstSys, lexAsm8, NewLexer, lexComment, lexLineComment, lexBlockComment, isOperandChar, isKeyword, lexOperand, lexString, argCount, parseBareFunc, isLabelStart, isLabel, parseLabel, parseOps, parseReg, parseStmt, isSymbol, isIdent, isPackName, parseSym, newParser, typeStr, NewStmtLexer, NewSymScope, NewSymTable, symStr, newWriter;
 	Builder = $pkg.Builder = $newType(0, "Struct", "asm8.Builder", "Builder", "lonnie.io/e8vm/asm8", function(errs_, scope_, hasError_) {
 		this.$val = this;
 		this.errs = errs_ !== undefined ? errs_ : ($ptrType(lex8.ErrorList)).nil;
@@ -17765,6 +17765,8 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 			}
 			_ref$1 = s.inst.fill;
 			if (_ref$1 === 0) {
+				_i++;
+				continue;
 			} else if (_ref$1 === 1) {
 				if (!(s.inst.pack === "")) {
 					$panic(new $String("fill label with pack symbol"));
@@ -17913,7 +17915,7 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		return new inst.Ptr(ret, "", "", 0, ($sliceType($Uint32)).nil, ($ptrType(lex8.Token)).nil);
 	};
 	parseInstImm = function(p, ops) {
-		var op0, opName, args, _tmp, _tmp$1, _tmp$2, _tmp$3, op, d, s, im, _tmp$4, _tmp$5, pack, sym, fill, symTok, argCount$1, parseSym$1, found, _tuple, _entry, _tuple$1, _entry$1, _tuple$2, _entry$2, ret;
+		var op0, opName, args, _tmp, _tmp$1, _tmp$2, _tmp$3, op, d, s, im, _tmp$4, _tmp$5, pack, sym, fill, symTok, argCount$1, parseSym$1, found, _tuple, _entry, _tuple$1, _entry$1, _tuple$2, _entry$2, _tuple$3, _entry$3, ret;
 		op0 = ((0 < 0 || 0 >= ops.$length) ? $throwRuntimeError("index out of range") : ops.$array[ops.$offset + 0]);
 		opName = op0.Lit;
 		args = $subslice(ops, 1);
@@ -17948,23 +17950,34 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 				parseSym$1(((2 < 0 || 2 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 2]), parseIms);
 			}
 		} else {
-			_tuple$1 = (_entry$1 = opImuMap[opName], _entry$1 !== undefined ? [_entry$1.v, true] : [0, false]); op = _tuple$1[0]; found = _tuple$1[1];
+			_tuple$1 = (_entry$1 = opMemMap[opName], _entry$1 !== undefined ? [_entry$1.v, true] : [0, false]); op = _tuple$1[0]; found = _tuple$1[1];
 			if (found) {
-				if (argCount$1(3)) {
+				if (args.$length === 2) {
+					d = parseReg(p, ((0 < 0 || 0 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 0]));
 					s = parseReg(p, ((1 < 0 || 1 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 1]));
-					parseSym$1(((2 < 0 || 2 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 2]), parseImu);
+				} else if (argCount$1(3)) {
+					s = parseReg(p, ((1 < 0 || 1 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 1]));
+					parseSym$1(((2 < 0 || 2 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 2]), parseIms);
 				}
 			} else {
-				_tuple$2 = (_entry$2 = opImmMap[opName], _entry$2 !== undefined ? [_entry$2.v, true] : [0, false]); op = _tuple$2[0]; found = _tuple$2[1];
+				_tuple$2 = (_entry$2 = opImuMap[opName], _entry$2 !== undefined ? [_entry$2.v, true] : [0, false]); op = _tuple$2[0]; found = _tuple$2[1];
 				if (found) {
-					if (argCount$1(2)) {
-						parseSym$1(((1 < 0 || 1 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 1]), parseImm);
-					}
-					if (opName === "lui" && (fill === 3)) {
-						fill = 4;
+					if (argCount$1(3)) {
+						s = parseReg(p, ((1 < 0 || 1 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 1]));
+						parseSym$1(((2 < 0 || 2 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 2]), parseImu);
 					}
 				} else {
-					return [($ptrType(inst)).nil, false];
+					_tuple$3 = (_entry$3 = opImmMap[opName], _entry$3 !== undefined ? [_entry$3.v, true] : [0, false]); op = _tuple$3[0]; found = _tuple$3[1];
+					if (found) {
+						if (argCount$1(2)) {
+							parseSym$1(((1 < 0 || 1 >= args.$length) ? $throwRuntimeError("index out of range") : args.$array[args.$offset + 1]), parseImm);
+						}
+						if (opName === "lui" && (fill === 3)) {
+							fill = 4;
+						}
+					} else {
+						return [($ptrType(inst)).nil, false];
+					}
 				}
 			}
 		}
@@ -18712,14 +18725,14 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 	};
 	SymTable.prototype.Query = function(n) { return this.$val.Query(n); };
 	SymTable.Ptr.prototype.Declare = function(s) {
-		var tab, n, _entry, p, _key$12;
+		var tab, n, _entry, p, _key$13;
 		tab = this;
 		n = s.Name;
 		p = (_entry = tab.m[n], _entry !== undefined ? _entry.v : ($ptrType(Symbol)).nil);
 		if (!(p === ($ptrType(Symbol)).nil)) {
 			return p.clone();
 		}
-		_key$12 = n; (tab.m || $throwRuntimeError("assignment to entry in nil map"))[_key$12] = { k: _key$12, v: s.clone() };
+		_key$13 = n; (tab.m || $throwRuntimeError("assignment to entry in nil map"))[_key$13] = { k: _key$13, v: s.clone() };
 		return ($ptrType(Symbol)).nil;
 	};
 	SymTable.prototype.Declare = function(s) { return this.$val.Declare(s); };
@@ -18816,22 +18829,23 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		($ptrType(writer)).methods = [["bytes", "bytes", "lonnie.io/e8vm/asm8", $funcType([], [($sliceType($Uint8))], false), -1], ["writeFunc", "writeFunc", "lonnie.io/e8vm/asm8", $funcType([($ptrType(Func))], [], false), -1], ["writeU32", "writeU32", "lonnie.io/e8vm/asm8", $funcType([$Uint32], [], false), -1]];
 		writer.init([["buf", "buf", "lonnie.io/e8vm/asm8", ($ptrType(bytes.Buffer)), ""]]);
 		opBrMap = (_map = new $Map(), _key = "bne", _map[_key] = { k: _key, v: 32 }, _key = "beq", _map[_key] = { k: _key, v: 33 }, _map);
-		opImsMap = (_map$1 = new $Map(), _key$1 = "addi", _map$1[_key$1] = { k: _key$1, v: 1 }, _key$1 = "slti", _map$1[_key$1] = { k: _key$1, v: 2 }, _key$1 = "lw", _map$1[_key$1] = { k: _key$1, v: 6 }, _key$1 = "lb", _map$1[_key$1] = { k: _key$1, v: 7 }, _key$1 = "lbu", _map$1[_key$1] = { k: _key$1, v: 8 }, _key$1 = "sw", _map$1[_key$1] = { k: _key$1, v: 9 }, _key$1 = "sb", _map$1[_key$1] = { k: _key$1, v: 10 }, _map$1);
-		opImuMap = (_map$2 = new $Map(), _key$2 = "andi", _map$2[_key$2] = { k: _key$2, v: 3 }, _key$2 = "ori", _map$2[_key$2] = { k: _key$2, v: 4 }, _map$2);
-		opImmMap = (_map$3 = new $Map(), _key$3 = "lui", _map$3[_key$3] = { k: _key$3, v: 5 }, _map$3);
-		opShiftMap = (_map$5 = new $Map(), _key$5 = "sll", _map$5[_key$5] = { k: _key$5, v: 0 }, _key$5 = "srl", _map$5[_key$5] = { k: _key$5, v: 1 }, _key$5 = "sra", _map$5[_key$5] = { k: _key$5, v: 2 }, _map$5);
-		opReg3Map = (_map$6 = new $Map(), _key$6 = "sllv", _map$6[_key$6] = { k: _key$6, v: 3 }, _key$6 = "srlv", _map$6[_key$6] = { k: _key$6, v: 4 }, _key$6 = "srla", _map$6[_key$6] = { k: _key$6, v: 5 }, _key$6 = "add", _map$6[_key$6] = { k: _key$6, v: 6 }, _key$6 = "sub", _map$6[_key$6] = { k: _key$6, v: 7 }, _key$6 = "and", _map$6[_key$6] = { k: _key$6, v: 8 }, _key$6 = "or", _map$6[_key$6] = { k: _key$6, v: 9 }, _key$6 = "xor", _map$6[_key$6] = { k: _key$6, v: 10 }, _key$6 = "nor", _map$6[_key$6] = { k: _key$6, v: 11 }, _key$6 = "slt", _map$6[_key$6] = { k: _key$6, v: 12 }, _key$6 = "sltu", _map$6[_key$6] = { k: _key$6, v: 13 }, _key$6 = "mul", _map$6[_key$6] = { k: _key$6, v: 14 }, _key$6 = "mulu", _map$6[_key$6] = { k: _key$6, v: 15 }, _key$6 = "div", _map$6[_key$6] = { k: _key$6, v: 16 }, _key$6 = "divu", _map$6[_key$6] = { k: _key$6, v: 17 }, _key$6 = "mod", _map$6[_key$6] = { k: _key$6, v: 18 }, _key$6 = "modu", _map$6[_key$6] = { k: _key$6, v: 19 }, _map$6);
-		opReg2Map = (_map$7 = new $Map(), _key$7 = "mov", _map$7[_key$7] = { k: _key$7, v: 0 }, _map$7);
-		opFloatMap = (_map$8 = new $Map(), _key$8 = "fadd", _map$8[_key$8] = { k: _key$8, v: 0 }, _key$8 = "fsub", _map$8[_key$8] = { k: _key$8, v: 1 }, _key$8 = "fmul", _map$8[_key$8] = { k: _key$8, v: 2 }, _key$8 = "fdiv", _map$8[_key$8] = { k: _key$8, v: 3 }, _key$8 = "fint", _map$8[_key$8] = { k: _key$8, v: 4 }, _map$8);
-		opSysMap = (_map$9 = new $Map(), _key$9 = "halt", _map$9[_key$9] = { k: _key$9, v: 64 }, _key$9 = "syscall", _map$9[_key$9] = { k: _key$9, v: 65 }, _key$9 = "usermod", _map$9[_key$9] = { k: _key$9, v: 66 }, _key$9 = "iret", _map$9[_key$9] = { k: _key$9, v: 68 }, _map$9);
-		opSys1Map = (_map$10 = new $Map(), _key$10 = "vtable", _map$10[_key$10] = { k: _key$10, v: 67 }, _key$10 = "cpuid", _map$10[_key$10] = { k: _key$10, v: 69 }, _map$10);
-		regNameMap = (_map$11 = new $Map(), _key$11 = "r0", _map$11[_key$11] = { k: _key$11, v: 0 }, _key$11 = "r1", _map$11[_key$11] = { k: _key$11, v: 1 }, _key$11 = "r2", _map$11[_key$11] = { k: _key$11, v: 2 }, _key$11 = "r3", _map$11[_key$11] = { k: _key$11, v: 3 }, _key$11 = "r4", _map$11[_key$11] = { k: _key$11, v: 4 }, _key$11 = "r5", _map$11[_key$11] = { k: _key$11, v: 5 }, _key$11 = "r6", _map$11[_key$11] = { k: _key$11, v: 6 }, _key$11 = "r7", _map$11[_key$11] = { k: _key$11, v: 7 }, _key$11 = "sp", _map$11[_key$11] = { k: _key$11, v: 5 }, _key$11 = "ret", _map$11[_key$11] = { k: _key$11, v: 6 }, _key$11 = "pc", _map$11[_key$11] = { k: _key$11, v: 7 }, _map$11);
+		opImsMap = (_map$1 = new $Map(), _key$1 = "addi", _map$1[_key$1] = { k: _key$1, v: 1 }, _key$1 = "slti", _map$1[_key$1] = { k: _key$1, v: 2 }, _map$1);
+		opMemMap = (_map$2 = new $Map(), _key$2 = "lw", _map$2[_key$2] = { k: _key$2, v: 6 }, _key$2 = "lb", _map$2[_key$2] = { k: _key$2, v: 7 }, _key$2 = "lbu", _map$2[_key$2] = { k: _key$2, v: 8 }, _key$2 = "sw", _map$2[_key$2] = { k: _key$2, v: 9 }, _key$2 = "sb", _map$2[_key$2] = { k: _key$2, v: 10 }, _map$2);
+		opImuMap = (_map$3 = new $Map(), _key$3 = "andi", _map$3[_key$3] = { k: _key$3, v: 3 }, _key$3 = "ori", _map$3[_key$3] = { k: _key$3, v: 4 }, _map$3);
+		opImmMap = (_map$4 = new $Map(), _key$4 = "lui", _map$4[_key$4] = { k: _key$4, v: 5 }, _map$4);
+		opShiftMap = (_map$6 = new $Map(), _key$6 = "sll", _map$6[_key$6] = { k: _key$6, v: 0 }, _key$6 = "srl", _map$6[_key$6] = { k: _key$6, v: 1 }, _key$6 = "sra", _map$6[_key$6] = { k: _key$6, v: 2 }, _map$6);
+		opReg3Map = (_map$7 = new $Map(), _key$7 = "sllv", _map$7[_key$7] = { k: _key$7, v: 3 }, _key$7 = "srlv", _map$7[_key$7] = { k: _key$7, v: 4 }, _key$7 = "srla", _map$7[_key$7] = { k: _key$7, v: 5 }, _key$7 = "add", _map$7[_key$7] = { k: _key$7, v: 6 }, _key$7 = "sub", _map$7[_key$7] = { k: _key$7, v: 7 }, _key$7 = "and", _map$7[_key$7] = { k: _key$7, v: 8 }, _key$7 = "or", _map$7[_key$7] = { k: _key$7, v: 9 }, _key$7 = "xor", _map$7[_key$7] = { k: _key$7, v: 10 }, _key$7 = "nor", _map$7[_key$7] = { k: _key$7, v: 11 }, _key$7 = "slt", _map$7[_key$7] = { k: _key$7, v: 12 }, _key$7 = "sltu", _map$7[_key$7] = { k: _key$7, v: 13 }, _key$7 = "mul", _map$7[_key$7] = { k: _key$7, v: 14 }, _key$7 = "mulu", _map$7[_key$7] = { k: _key$7, v: 15 }, _key$7 = "div", _map$7[_key$7] = { k: _key$7, v: 16 }, _key$7 = "divu", _map$7[_key$7] = { k: _key$7, v: 17 }, _key$7 = "mod", _map$7[_key$7] = { k: _key$7, v: 18 }, _key$7 = "modu", _map$7[_key$7] = { k: _key$7, v: 19 }, _map$7);
+		opReg2Map = (_map$8 = new $Map(), _key$8 = "mov", _map$8[_key$8] = { k: _key$8, v: 0 }, _map$8);
+		opFloatMap = (_map$9 = new $Map(), _key$9 = "fadd", _map$9[_key$9] = { k: _key$9, v: 0 }, _key$9 = "fsub", _map$9[_key$9] = { k: _key$9, v: 1 }, _key$9 = "fmul", _map$9[_key$9] = { k: _key$9, v: 2 }, _key$9 = "fdiv", _map$9[_key$9] = { k: _key$9, v: 3 }, _key$9 = "fint", _map$9[_key$9] = { k: _key$9, v: 4 }, _map$9);
+		opSysMap = (_map$10 = new $Map(), _key$10 = "halt", _map$10[_key$10] = { k: _key$10, v: 64 }, _key$10 = "syscall", _map$10[_key$10] = { k: _key$10, v: 65 }, _key$10 = "usermod", _map$10[_key$10] = { k: _key$10, v: 66 }, _key$10 = "iret", _map$10[_key$10] = { k: _key$10, v: 68 }, _map$10);
+		opSys1Map = (_map$11 = new $Map(), _key$11 = "vtable", _map$11[_key$11] = { k: _key$11, v: 67 }, _key$11 = "cpuid", _map$11[_key$11] = { k: _key$11, v: 69 }, _map$11);
+		regNameMap = (_map$12 = new $Map(), _key$12 = "r0", _map$12[_key$12] = { k: _key$12, v: 0 }, _key$12 = "r1", _map$12[_key$12] = { k: _key$12, v: 1 }, _key$12 = "r2", _map$12[_key$12] = { k: _key$12, v: 2 }, _key$12 = "r3", _map$12[_key$12] = { k: _key$12, v: 3 }, _key$12 = "r4", _map$12[_key$12] = { k: _key$12, v: 4 }, _key$12 = "r5", _map$12[_key$12] = { k: _key$12, v: 5 }, _key$12 = "r6", _map$12[_key$12] = { k: _key$12, v: 6 }, _key$12 = "r7", _map$12[_key$12] = { k: _key$12, v: 7 }, _key$12 = "sp", _map$12[_key$12] = { k: _key$12, v: 5 }, _key$12 = "ret", _map$12[_key$12] = { k: _key$12, v: 6 }, _key$12 = "pc", _map$12[_key$12] = { k: _key$12, v: 7 }, _map$12);
 		insts = new ($sliceType(instParse))([parseInstReg, parseInstImm, parseInstBr, parseInstJmp, parseInstSys]);
 	};
 	return $pkg;
 })();
 $packages["lonnie.io/e8vm/dasm8"] = (function() {
-	var $pkg = {}, fmt = $packages["fmt"], binary = $packages["encoding/binary"], Line, opBrMap, opImsMap, opImuMap, opImu2Map, opJmpMap, opShiftMap, opReg3Map, opFloatMap, opSysMap, opSys1Map, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$5, _key$5, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, Dasm, NewLine, instBr, instImm, instJmp, instReg, instSys, newLine, regStr;
+	var $pkg = {}, fmt = $packages["fmt"], binary = $packages["encoding/binary"], Line, opBrMap, opImsMap, opMemMap, opImuMap, opImu2Map, opJmpMap, opShiftMap, opReg3Map, opFloatMap, opSysMap, opSys1Map, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$5, _key$5, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, Dasm, NewLine, instBr, instImm, instJmp, instReg, instSys, newLine, regStr;
 	Line = $pkg.Line = $newType(0, "Struct", "dasm8.Line", "Line", "lonnie.io/e8vm/dasm8", function(Addr_, Inst_, Str_, IsJump_, To_, ToLine_) {
 		this.$val = this;
 		this.Addr = Addr_ !== undefined ? Addr_ : 0;
@@ -18906,7 +18920,7 @@ $packages["lonnie.io/e8vm/dasm8"] = (function() {
 		return ret;
 	};
 	instImm = function(addr, in$1) {
-		var op, dest, src, imu, ims, s, _tuple, _entry, opStr, found, _tuple$1, _entry$1, opStr$1, found$1, _tuple$2, _entry$2, opStr$2, found$2, ret;
+		var op, dest, src, imu, ims, s, _tuple, _entry, opStr, found, _tuple$1, _entry$1, opStr$1, found$1, _tuple$2, _entry$2, opStr$2, found$2, _tuple$3, _entry$3, opStr$3, found$3, ret;
 		op = (((in$1 >>> 24 >>> 0)) & 255) >>> 0;
 		dest = regStr((((in$1 >>> 21 >>> 0)) & 7) >>> 0);
 		src = regStr((((in$1 >>> 18 >>> 0)) & 7) >>> 0);
@@ -18917,13 +18931,22 @@ $packages["lonnie.io/e8vm/dasm8"] = (function() {
 		if (found) {
 			s = fmt.Sprintf("%s %s %s %d", new ($sliceType($emptyInterface))([new $String(opStr), new $String(dest), new $String(src), new $Uint32(ims)]));
 		} else {
-			_tuple$1 = (_entry$1 = opImuMap[op], _entry$1 !== undefined ? [_entry$1.v, true] : ["", false]); opStr$1 = _tuple$1[0]; found$1 = _tuple$1[1];
+			_tuple$1 = (_entry$1 = opMemMap[op], _entry$1 !== undefined ? [_entry$1.v, true] : ["", false]); opStr$1 = _tuple$1[0]; found$1 = _tuple$1[1];
 			if (found$1) {
-				s = fmt.Sprintf("%s %s %s 0x%04x", new ($sliceType($emptyInterface))([new $String(opStr$1), new $String(dest), new $String(src), new $Uint32(imu)]));
+				if (ims === 0) {
+					s = fmt.Sprintf("%s %s %s", new ($sliceType($emptyInterface))([new $String(opStr$1), new $String(dest), new $String(src)]));
+				} else {
+					s = fmt.Sprintf("%s %s %s %d", new ($sliceType($emptyInterface))([new $String(opStr$1), new $String(dest), new $String(src), new $Uint32(ims)]));
+				}
 			} else {
-				_tuple$2 = (_entry$2 = opImu2Map[op], _entry$2 !== undefined ? [_entry$2.v, true] : ["", false]); opStr$2 = _tuple$2[0]; found$2 = _tuple$2[1];
+				_tuple$2 = (_entry$2 = opImuMap[op], _entry$2 !== undefined ? [_entry$2.v, true] : ["", false]); opStr$2 = _tuple$2[0]; found$2 = _tuple$2[1];
 				if (found$2) {
-					s = fmt.Sprintf("%s %s 0x%04x", new ($sliceType($emptyInterface))([new $String(opStr$2), new $String(dest), new $Uint32(imu)]));
+					s = fmt.Sprintf("%s %s %s 0x%04x", new ($sliceType($emptyInterface))([new $String(opStr$2), new $String(dest), new $String(src), new $Uint32(imu)]));
+				} else {
+					_tuple$3 = (_entry$3 = opImu2Map[op], _entry$3 !== undefined ? [_entry$3.v, true] : ["", false]); opStr$3 = _tuple$3[0]; found$3 = _tuple$3[1];
+					if (found$3) {
+						s = fmt.Sprintf("%s %s 0x%04x", new ($sliceType($emptyInterface))([new $String(opStr$3), new $String(dest), new $Uint32(imu)]));
+					}
 				}
 			}
 		}
@@ -19003,9 +19026,9 @@ $packages["lonnie.io/e8vm/dasm8"] = (function() {
 		var line;
 		line = this;
 		if (!line.IsJump) {
-			return fmt.Sprintf("%08x:  %08x   %s", new ($sliceType($emptyInterface))([new $Uint32(line.Addr), new $Uint32(line.Inst), new $String(line.Str)]));
+			return fmt.Sprintf("%08x:  %08x     %s", new ($sliceType($emptyInterface))([new $Uint32(line.Addr), new $Uint32(line.Inst), new $String(line.Str)]));
 		}
-		return fmt.Sprintf("%08x:  %08x   %s  // %08x", new ($sliceType($emptyInterface))([new $Uint32(line.Addr), new $Uint32(line.Inst), new $String(line.Str), new $Uint32(line.To)]));
+		return fmt.Sprintf("%08x:  %08x     %s    // %08x", new ($sliceType($emptyInterface))([new $Uint32(line.Addr), new $Uint32(line.Inst), new $String(line.Str), new $Uint32(line.To)]));
 	};
 	Line.prototype.String = function() { return this.$val.String(); };
 	newLine = function(addr, in$1) {
@@ -19042,15 +19065,16 @@ $packages["lonnie.io/e8vm/dasm8"] = (function() {
 		($ptrType(Line)).methods = [["String", "String", "", $funcType([], [$String], false), -1]];
 		Line.init([["Addr", "Addr", "", $Uint32, ""], ["Inst", "Inst", "", $Uint32, ""], ["Str", "Str", "", $String, ""], ["IsJump", "IsJump", "", $Bool, ""], ["To", "To", "", $Uint32, ""], ["ToLine", "ToLine", "", ($ptrType(Line)), ""]]);
 		opBrMap = (_map = new $Map(), _key = 32, _map[_key] = { k: _key, v: "bne" }, _key = 33, _map[_key] = { k: _key, v: "beq" }, _map);
-		opImsMap = (_map$1 = new $Map(), _key$1 = 1, _map$1[_key$1] = { k: _key$1, v: "addi" }, _key$1 = 2, _map$1[_key$1] = { k: _key$1, v: "slti" }, _key$1 = 6, _map$1[_key$1] = { k: _key$1, v: "lw" }, _key$1 = 7, _map$1[_key$1] = { k: _key$1, v: "lb" }, _key$1 = 8, _map$1[_key$1] = { k: _key$1, v: "lbu" }, _key$1 = 9, _map$1[_key$1] = { k: _key$1, v: "sw" }, _key$1 = 10, _map$1[_key$1] = { k: _key$1, v: "sb" }, _map$1);
-		opImuMap = (_map$2 = new $Map(), _key$2 = 3, _map$2[_key$2] = { k: _key$2, v: "andi" }, _key$2 = 4, _map$2[_key$2] = { k: _key$2, v: "ori" }, _map$2);
-		opImu2Map = (_map$3 = new $Map(), _key$3 = 5, _map$3[_key$3] = { k: _key$3, v: "lui" }, _map$3);
-		opJmpMap = (_map$4 = new $Map(), _key$4 = 2, _map$4[_key$4] = { k: _key$4, v: "j" }, _key$4 = 3, _map$4[_key$4] = { k: _key$4, v: "jal" }, _map$4);
-		opShiftMap = (_map$5 = new $Map(), _key$5 = 0, _map$5[_key$5] = { k: _key$5, v: "sll" }, _key$5 = 1, _map$5[_key$5] = { k: _key$5, v: "srl" }, _key$5 = 2, _map$5[_key$5] = { k: _key$5, v: "sra" }, _map$5);
-		opReg3Map = (_map$6 = new $Map(), _key$6 = 3, _map$6[_key$6] = { k: _key$6, v: "sllv" }, _key$6 = 4, _map$6[_key$6] = { k: _key$6, v: "srlv" }, _key$6 = 5, _map$6[_key$6] = { k: _key$6, v: "srla" }, _key$6 = 6, _map$6[_key$6] = { k: _key$6, v: "add" }, _key$6 = 7, _map$6[_key$6] = { k: _key$6, v: "sub" }, _key$6 = 8, _map$6[_key$6] = { k: _key$6, v: "and" }, _key$6 = 9, _map$6[_key$6] = { k: _key$6, v: "or" }, _key$6 = 10, _map$6[_key$6] = { k: _key$6, v: "xor" }, _key$6 = 11, _map$6[_key$6] = { k: _key$6, v: "nor" }, _key$6 = 12, _map$6[_key$6] = { k: _key$6, v: "slt" }, _key$6 = 13, _map$6[_key$6] = { k: _key$6, v: "sltu" }, _key$6 = 14, _map$6[_key$6] = { k: _key$6, v: "mul" }, _key$6 = 15, _map$6[_key$6] = { k: _key$6, v: "mulu" }, _key$6 = 16, _map$6[_key$6] = { k: _key$6, v: "div" }, _key$6 = 17, _map$6[_key$6] = { k: _key$6, v: "divu" }, _key$6 = 18, _map$6[_key$6] = { k: _key$6, v: "mod" }, _key$6 = 19, _map$6[_key$6] = { k: _key$6, v: "modu" }, _map$6);
-		opFloatMap = (_map$7 = new $Map(), _key$7 = 0, _map$7[_key$7] = { k: _key$7, v: "fadd" }, _key$7 = 1, _map$7[_key$7] = { k: _key$7, v: "fsub" }, _key$7 = 2, _map$7[_key$7] = { k: _key$7, v: "fmul" }, _key$7 = 3, _map$7[_key$7] = { k: _key$7, v: "fdiv" }, _key$7 = 4, _map$7[_key$7] = { k: _key$7, v: "fint" }, _map$7);
-		opSysMap = (_map$8 = new $Map(), _key$8 = 64, _map$8[_key$8] = { k: _key$8, v: "halt" }, _key$8 = 65, _map$8[_key$8] = { k: _key$8, v: "syscall" }, _key$8 = 66, _map$8[_key$8] = { k: _key$8, v: "usermod" }, _key$8 = 68, _map$8[_key$8] = { k: _key$8, v: "iret" }, _map$8);
-		opSys1Map = (_map$9 = new $Map(), _key$9 = 67, _map$9[_key$9] = { k: _key$9, v: "vtable" }, _key$9 = 69, _map$9[_key$9] = { k: _key$9, v: "cpuid" }, _map$9);
+		opImsMap = (_map$1 = new $Map(), _key$1 = 1, _map$1[_key$1] = { k: _key$1, v: "addi" }, _key$1 = 2, _map$1[_key$1] = { k: _key$1, v: "slti" }, _map$1);
+		opMemMap = (_map$2 = new $Map(), _key$2 = 6, _map$2[_key$2] = { k: _key$2, v: "lw" }, _key$2 = 7, _map$2[_key$2] = { k: _key$2, v: "lb" }, _key$2 = 8, _map$2[_key$2] = { k: _key$2, v: "lbu" }, _key$2 = 9, _map$2[_key$2] = { k: _key$2, v: "sw" }, _key$2 = 10, _map$2[_key$2] = { k: _key$2, v: "sb" }, _map$2);
+		opImuMap = (_map$3 = new $Map(), _key$3 = 3, _map$3[_key$3] = { k: _key$3, v: "andi" }, _key$3 = 4, _map$3[_key$3] = { k: _key$3, v: "ori" }, _map$3);
+		opImu2Map = (_map$4 = new $Map(), _key$4 = 5, _map$4[_key$4] = { k: _key$4, v: "lui" }, _map$4);
+		opJmpMap = (_map$5 = new $Map(), _key$5 = 2, _map$5[_key$5] = { k: _key$5, v: "j" }, _key$5 = 3, _map$5[_key$5] = { k: _key$5, v: "jal" }, _map$5);
+		opShiftMap = (_map$6 = new $Map(), _key$6 = 0, _map$6[_key$6] = { k: _key$6, v: "sll" }, _key$6 = 1, _map$6[_key$6] = { k: _key$6, v: "srl" }, _key$6 = 2, _map$6[_key$6] = { k: _key$6, v: "sra" }, _map$6);
+		opReg3Map = (_map$7 = new $Map(), _key$7 = 3, _map$7[_key$7] = { k: _key$7, v: "sllv" }, _key$7 = 4, _map$7[_key$7] = { k: _key$7, v: "srlv" }, _key$7 = 5, _map$7[_key$7] = { k: _key$7, v: "srla" }, _key$7 = 6, _map$7[_key$7] = { k: _key$7, v: "add" }, _key$7 = 7, _map$7[_key$7] = { k: _key$7, v: "sub" }, _key$7 = 8, _map$7[_key$7] = { k: _key$7, v: "and" }, _key$7 = 9, _map$7[_key$7] = { k: _key$7, v: "or" }, _key$7 = 10, _map$7[_key$7] = { k: _key$7, v: "xor" }, _key$7 = 11, _map$7[_key$7] = { k: _key$7, v: "nor" }, _key$7 = 12, _map$7[_key$7] = { k: _key$7, v: "slt" }, _key$7 = 13, _map$7[_key$7] = { k: _key$7, v: "sltu" }, _key$7 = 14, _map$7[_key$7] = { k: _key$7, v: "mul" }, _key$7 = 15, _map$7[_key$7] = { k: _key$7, v: "mulu" }, _key$7 = 16, _map$7[_key$7] = { k: _key$7, v: "div" }, _key$7 = 17, _map$7[_key$7] = { k: _key$7, v: "divu" }, _key$7 = 18, _map$7[_key$7] = { k: _key$7, v: "mod" }, _key$7 = 19, _map$7[_key$7] = { k: _key$7, v: "modu" }, _map$7);
+		opFloatMap = (_map$8 = new $Map(), _key$8 = 0, _map$8[_key$8] = { k: _key$8, v: "fadd" }, _key$8 = 1, _map$8[_key$8] = { k: _key$8, v: "fsub" }, _key$8 = 2, _map$8[_key$8] = { k: _key$8, v: "fmul" }, _key$8 = 3, _map$8[_key$8] = { k: _key$8, v: "fdiv" }, _key$8 = 4, _map$8[_key$8] = { k: _key$8, v: "fint" }, _map$8);
+		opSysMap = (_map$9 = new $Map(), _key$9 = 64, _map$9[_key$9] = { k: _key$9, v: "halt" }, _key$9 = 65, _map$9[_key$9] = { k: _key$9, v: "syscall" }, _key$9 = 66, _map$9[_key$9] = { k: _key$9, v: "usermod" }, _key$9 = 68, _map$9[_key$9] = { k: _key$9, v: "iret" }, _map$9);
+		opSys1Map = (_map$10 = new $Map(), _key$10 = 67, _map$10[_key$10] = { k: _key$10, v: "vtable" }, _key$10 = 69, _map$10[_key$10] = { k: _key$10, v: "cpuid" }, _map$10);
 	};
 	return $pkg;
 })();
