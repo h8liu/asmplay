@@ -32,7 +32,7 @@ func compile(file, code string) map[string]interface{} {
 
 func buildBareFunc(file, code string) ([]byte, []*lex8.Error) {
 	rc := ioutil.NopCloser(strings.NewReader(code))
-	return asm8.BuildBareFunc(file, rc)
+	return asm8.BuildSingleFile(file, rc)
 }
 
 func _compile(file, code string) (dump, errs string) {
