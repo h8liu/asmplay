@@ -17766,8 +17766,8 @@ $packages["lonnie.io/e8vm/link8"] = (function() {
 		lnk = NewLinker();
 		lnk.AddPkgs(main);
 		_tuple = main.Query("main"); funcMain = _tuple[0]; index = _tuple[1];
-		if (!((funcMain.Type === 0))) {
-			return [($sliceType($Uint8)).nil, fmt.Errorf("main function missing in %s", new ($sliceType($emptyInterface))([new $String(main.path)]))];
+		if (funcMain === ($ptrType(Symbol)).nil || !((funcMain.Type === 0))) {
+			return [($sliceType($Uint8)).nil, fmt.Errorf("main function missing", new ($sliceType($emptyInterface))([]))];
 		}
 		used = traceUsed(lnk, main, index);
 		_tuple$1 = layout(used); funcs = _tuple$1[0]; vars = _tuple$1[1]; e = _tuple$1[2];
@@ -19594,9 +19594,11 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		ret = new varDecl.Ptr();
 		ret.kw = p.expectKeyword("var");
 		ret.name = p.expect(2);
-		name = ret.name.Lit;
-		if (!isIdent(name)) {
-			p.err(ret.name.Pos, "invalid var name %q", new ($sliceType($emptyInterface))([new $String(name)]));
+		if (!(ret.name === ($ptrType(lex8.Token)).nil)) {
+			name = ret.name.Lit;
+			if (!isIdent(name)) {
+				p.err(ret.name.Pos, "invalid var name %q", new ($sliceType($emptyInterface))([new $String(name)]));
+			}
 		}
 		ret.lbrace = p.expect(4);
 		if (p.skipErrStmt()) {
