@@ -21262,7 +21262,7 @@ $packages["lonnie.io/e8vm/dasm8"] = (function() {
 				continue;
 			}
 			index = (_q$1 = ((line.To - base >>> 0) >> 0) / 4, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >> 0 : $throwRuntimeError("integer divide by zero"));
-			if (index < nline) {
+			if (index >= 0 && index < nline) {
 				line.ToLine = ((index < 0 || index >= ret.$length) ? $throwRuntimeError("index out of range") : ret.$array[ret.$offset + index]);
 			}
 			_i++;
