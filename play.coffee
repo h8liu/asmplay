@@ -96,7 +96,7 @@ update = ->
 
 main = ->
     editorInit()
-    exampleInit()
+    # exampleInit()
     update()
     e8vm.editor.getSession().on("change", ->
         update()

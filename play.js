@@ -59,7 +59,6 @@
 
   main = function() {
     editorInit();
-    exampleInit();
     update();
     e8vm.editor.getSession().on("change", function() {
       update();
