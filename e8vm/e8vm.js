@@ -20527,9 +20527,11 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		ret = new funcDecl.Ptr();
 		ret.kw = p.expectKeyword("func");
 		ret.name = p.expect(2);
-		name = ret.name.Lit;
-		if (!isIdent(name)) {
-			p.err(ret.name.Pos, "invalid func name %q", new ($sliceType($emptyInterface))([new $String(name)]));
+		if (!(ret.name === ($ptrType(lex8.Token)).nil)) {
+			name = ret.name.Lit;
+			if (!isIdent(name)) {
+				p.err(ret.name.Pos, "invalid func name %q", new ($sliceType($emptyInterface))([new $String(name)]));
+			}
 		}
 		ret.lbrace = p.expect(4);
 		if (p.skipErrStmt()) {
