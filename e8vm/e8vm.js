@@ -20367,8 +20367,8 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		if (!x.See(34)) {
 			$panic(new $String("incorrect string start"));
 		}
+		x.Next();
 		while (true) {
-			x.Next();
 			if (x.Ended()) {
 				x.Err("unexpected eof in string", new ($sliceType($emptyInterface))([]));
 				break;
@@ -20382,6 +20382,8 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 			} else if (x.See(92)) {
 				x.Next();
 				lexEscape(x, 34);
+			} else {
+				x.Next();
 			}
 		}
 		return x.MakeToken(3);
