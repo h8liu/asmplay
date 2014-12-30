@@ -2869,7 +2869,7 @@ $packages["unicode"] = (function() {
 	return $pkg;
 })();
 $packages["bytes"] = (function() {
-	var $pkg = {}, errors = $packages["errors"], io = $packages["io"], utf8 = $packages["unicode/utf8"], unicode = $packages["unicode"], Buffer, readOp, IndexByte, makeSlice, Map;
+	var $pkg = {}, errors = $packages["errors"], io = $packages["io"], utf8 = $packages["unicode/utf8"], unicode = $packages["unicode"], Buffer, readOp, IndexByte, makeSlice, NewBuffer, Map;
 	Buffer = $pkg.Buffer = $newType(0, $kindStruct, "bytes.Buffer", "Buffer", "bytes", function(buf_, off_, runeBytes_, bootstrap_, lastRead_) {
 		this.$val = this;
 		this.buf = buf_ !== undefined ? buf_ : ($sliceType($Uint8)).nil;
@@ -3210,6 +3210,9 @@ $packages["bytes"] = (function() {
 		return [line, err];
 	};
 	Buffer.prototype.ReadString = function(delim) { return this.$val.ReadString(delim); };
+	NewBuffer = $pkg.NewBuffer = function(buf) {
+		return new Buffer.Ptr(buf, 0, ($arrayType($Uint8, 4)).zero(), ($arrayType($Uint8, 64)).zero(), 0);
+	};
 	Map = $pkg.Map = function(mapping, s) {
 		var maxbytes, nbytes, b, i, wid, r, _tuple, rl, nb;
 		maxbytes = s.$length;
@@ -11996,7 +11999,7 @@ $packages["reflect"] = (function() {
 	return $pkg;
 })();
 $packages["fmt"] = (function() {
-	var $pkg = {}, math = $packages["math"], strconv = $packages["strconv"], utf8 = $packages["unicode/utf8"], errors = $packages["errors"], io = $packages["io"], os = $packages["os"], reflect = $packages["reflect"], sync = $packages["sync"], fmtFlags, fmt, State, Formatter, Stringer, GoStringer, buffer, pp, runeUnreader, scanError, ss, ssave, padZeroBytes, padSpaceBytes, trueBytes, falseBytes, commaSpaceBytes, nilAngleBytes, nilParenBytes, nilBytes, mapBytes, percentBangBytes, missingBytes, badIndexBytes, panicBytes, extraBytes, irparenBytes, bytesBytes, badWidthBytes, badPrecBytes, noVerbBytes, ppFree, intBits, uintptrBits, byteType, space, ssFree, complexError, boolError, init, doPrec, newPrinter, Fprintf, Sprintf, Errorf, Sprint, Fprintln, Sprintln, getField, parsenum, intFromArg, parseArgNumber, isSpace, notSpace, indexRune;
+	var $pkg = {}, math = $packages["math"], strconv = $packages["strconv"], utf8 = $packages["unicode/utf8"], errors = $packages["errors"], io = $packages["io"], os = $packages["os"], reflect = $packages["reflect"], sync = $packages["sync"], fmtFlags, fmt, State, Formatter, Stringer, GoStringer, buffer, pp, runeUnreader, scanError, ss, ssave, padZeroBytes, padSpaceBytes, trueBytes, falseBytes, commaSpaceBytes, nilAngleBytes, nilParenBytes, nilBytes, mapBytes, percentBangBytes, missingBytes, badIndexBytes, panicBytes, extraBytes, irparenBytes, bytesBytes, badWidthBytes, badPrecBytes, noVerbBytes, ppFree, intBits, uintptrBits, byteType, space, ssFree, complexError, boolError, init, doPrec, newPrinter, Fprintf, Printf, Sprintf, Errorf, Sprint, Fprintln, Println, Sprintln, getField, parsenum, intFromArg, parseArgNumber, isSpace, notSpace, indexRune;
 	fmtFlags = $pkg.fmtFlags = $newType(0, $kindStruct, "fmt.fmtFlags", "fmtFlags", "fmt", function(widPresent_, precPresent_, minus_, plus_, sharp_, space_, unicode_, uniQuote_, zero_, plusV_, sharpV_) {
 		this.$val = this;
 		this.widPresent = widPresent_ !== undefined ? widPresent_ : false;
@@ -12663,6 +12666,11 @@ $packages["fmt"] = (function() {
 		p.free();
 		return [n, err];
 	};
+	Printf = $pkg.Printf = function(format, a) {
+		var n = 0, err = $ifaceNil, _tuple;
+		_tuple = Fprintf(os.Stdout, format, a); n = _tuple[0]; err = _tuple[1];
+		return [n, err];
+	};
 	Sprintf = $pkg.Sprintf = function(format, a) {
 		var p, s;
 		p = newPrinter();
@@ -12688,6 +12696,11 @@ $packages["fmt"] = (function() {
 		p.doPrint(a, true, true);
 		_tuple = w.Write((x = p.buf, $subslice(new ($sliceType($Uint8))(x.$array), x.$offset, x.$offset + x.$length))); n = _tuple[0]; err = _tuple[1];
 		p.free();
+		return [n, err];
+	};
+	Println = $pkg.Println = function(a) {
+		var n = 0, err = $ifaceNil, _tuple;
+		_tuple = Fprintln(os.Stdout, a); n = _tuple[0]; err = _tuple[1];
 		return [n, err];
 	};
 	Sprintln = $pkg.Sprintln = function(a) {
@@ -16530,7 +16543,7 @@ $packages["math/rand"] = (function() {
 	return $pkg;
 })();
 $packages["lonnie.io/e8vm/arch8"] = (function() {
-	var $pkg = {}, io = $packages["io"], log = $packages["log"], os = $packages["os"], errors = $packages["errors"], math = $packages["math"], fmt = $packages["fmt"], binary = $packages["encoding/binary"], bytes = $packages["bytes"], rand = $packages["math/rand"], time = $packages["time"], console, Excep, intBus, interrupt, page, serial, errHalt, errTimeInt, errInvalidInst, errOutOfRange, errMisalign, newExcep, wordOff;
+	var $pkg = {}, io = $packages["io"], log = $packages["log"], os = $packages["os"], errors = $packages["errors"], math = $packages["math"], fmt = $packages["fmt"], binary = $packages["encoding/binary"], bytes = $packages["bytes"], rand = $packages["math/rand"], time = $packages["time"], console, inst, cpu, device, Excep, instArch8, instBr, instImm, instJmp, instReg, instSys, intBus, interrupt, Machine, multiCore, CoreExcep, page, pageTable, ptEntry, phyMemory, serial, ticker, virtMemory, errHalt, errTimeInt, errInvalidInst, errOutOfRange, errMisalign, newConsole, newCPU, newExcep, newPageFault, newPageReadonly, intAllCores, newInterrupt, NewMachine, newMultiCore, printCPUStatus, newPage, wordOff, newPageTable, newPhyMemory, makeRegs, newSerial, newTicker, newVirtMemory;
 	console = $pkg.console = $newType(0, $kindStruct, "arch8.console", "console", "lonnie.io/e8vm/arch8", function(intBus_, p_, Core_, IntIn_, IntOut_, Output_) {
 		this.$val = this;
 		this.intBus = intBus_ !== undefined ? intBus_ : $ifaceNil;
@@ -16540,11 +16553,46 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		this.IntOut = IntOut_ !== undefined ? IntOut_ : 0;
 		this.Output = Output_ !== undefined ? Output_ : $ifaceNil;
 	});
+	inst = $pkg.inst = $newType(8, $kindInterface, "arch8.inst", "inst", "lonnie.io/e8vm/arch8", null);
+	cpu = $pkg.cpu = $newType(0, $kindStruct, "arch8.cpu", "cpu", "lonnie.io/e8vm/arch8", function(regs_, ring_, phyMem_, virtMem_, interrupt_, inst_, index_) {
+		this.$val = this;
+		this.regs = regs_ !== undefined ? regs_ : ($sliceType($Uint32)).nil;
+		this.ring = ring_ !== undefined ? ring_ : 0;
+		this.phyMem = phyMem_ !== undefined ? phyMem_ : ($ptrType(phyMemory)).nil;
+		this.virtMem = virtMem_ !== undefined ? virtMem_ : ($ptrType(virtMemory)).nil;
+		this.interrupt = interrupt_ !== undefined ? interrupt_ : ($ptrType(interrupt)).nil;
+		this.inst = inst_ !== undefined ? inst_ : $ifaceNil;
+		this.index = index_ !== undefined ? index_ : 0;
+	});
+	device = $pkg.device = $newType(8, $kindInterface, "arch8.device", "device", "lonnie.io/e8vm/arch8", null);
 	Excep = $pkg.Excep = $newType(0, $kindStruct, "arch8.Excep", "Excep", "lonnie.io/e8vm/arch8", function(Code_, Arg_, Err_) {
 		this.$val = this;
 		this.Code = Code_ !== undefined ? Code_ : 0;
 		this.Arg = Arg_ !== undefined ? Arg_ : 0;
 		this.Err = Err_ !== undefined ? Err_ : $ifaceNil;
+	});
+	instArch8 = $pkg.instArch8 = $newType(0, $kindStruct, "arch8.instArch8", "instArch8", "lonnie.io/e8vm/arch8", function(reg_, imm_, br_, sys_, jmp_) {
+		this.$val = this;
+		this.reg = reg_ !== undefined ? reg_ : new instReg.Ptr();
+		this.imm = imm_ !== undefined ? imm_ : new instImm.Ptr();
+		this.br = br_ !== undefined ? br_ : new instBr.Ptr();
+		this.sys = sys_ !== undefined ? sys_ : new instSys.Ptr();
+		this.jmp = jmp_ !== undefined ? jmp_ : new instJmp.Ptr();
+	});
+	instBr = $pkg.instBr = $newType(0, $kindStruct, "arch8.instBr", "instBr", "lonnie.io/e8vm/arch8", function() {
+		this.$val = this;
+	});
+	instImm = $pkg.instImm = $newType(0, $kindStruct, "arch8.instImm", "instImm", "lonnie.io/e8vm/arch8", function() {
+		this.$val = this;
+	});
+	instJmp = $pkg.instJmp = $newType(0, $kindStruct, "arch8.instJmp", "instJmp", "lonnie.io/e8vm/arch8", function() {
+		this.$val = this;
+	});
+	instReg = $pkg.instReg = $newType(0, $kindStruct, "arch8.instReg", "instReg", "lonnie.io/e8vm/arch8", function() {
+		this.$val = this;
+	});
+	instSys = $pkg.instSys = $newType(0, $kindStruct, "arch8.instSys", "instSys", "lonnie.io/e8vm/arch8", function() {
+		this.$val = this;
 	});
 	intBus = $pkg.intBus = $newType(8, $kindInterface, "arch8.intBus", "intBus", "lonnie.io/e8vm/arch8", null);
 	interrupt = $pkg.interrupt = $newType(0, $kindStruct, "arch8.interrupt", "interrupt", "lonnie.io/e8vm/arch8", function(p_, base_) {
@@ -16552,9 +16600,43 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		this.p = p_ !== undefined ? p_ : ($ptrType(page)).nil;
 		this.base = base_ !== undefined ? base_ : 0;
 	});
+	Machine = $pkg.Machine = $newType(0, $kindStruct, "arch8.Machine", "Machine", "lonnie.io/e8vm/arch8", function(phyMem_, inst_, cores_, serial_, console_, devices_) {
+		this.$val = this;
+		this.phyMem = phyMem_ !== undefined ? phyMem_ : ($ptrType(phyMemory)).nil;
+		this.inst = inst_ !== undefined ? inst_ : $ifaceNil;
+		this.cores = cores_ !== undefined ? cores_ : ($ptrType(multiCore)).nil;
+		this.serial = serial_ !== undefined ? serial_ : ($ptrType(serial)).nil;
+		this.console = console_ !== undefined ? console_ : ($ptrType(console)).nil;
+		this.devices = devices_ !== undefined ? devices_ : ($sliceType(device)).nil;
+	});
+	multiCore = $pkg.multiCore = $newType(0, $kindStruct, "arch8.multiCore", "multiCore", "lonnie.io/e8vm/arch8", function(cores_, phyMem_) {
+		this.$val = this;
+		this.cores = cores_ !== undefined ? cores_ : ($sliceType(($ptrType(cpu)))).nil;
+		this.phyMem = phyMem_ !== undefined ? phyMem_ : ($ptrType(phyMemory)).nil;
+	});
+	CoreExcep = $pkg.CoreExcep = $newType(0, $kindStruct, "arch8.CoreExcep", "CoreExcep", "lonnie.io/e8vm/arch8", function(Core_, Excep_) {
+		this.$val = this;
+		this.Core = Core_ !== undefined ? Core_ : 0;
+		this.Excep = Excep_ !== undefined ? Excep_ : ($ptrType(Excep)).nil;
+	});
 	page = $pkg.page = $newType(0, $kindStruct, "arch8.page", "page", "lonnie.io/e8vm/arch8", function(Bytes_) {
 		this.$val = this;
 		this.Bytes = Bytes_ !== undefined ? Bytes_ : ($sliceType($Uint8)).nil;
+	});
+	pageTable = $pkg.pageTable = $newType(0, $kindStruct, "arch8.pageTable", "pageTable", "lonnie.io/e8vm/arch8", function(mem_, root_, pte1_, pte2_, pte1Addr_, pte2Addr_) {
+		this.$val = this;
+		this.mem = mem_ !== undefined ? mem_ : ($ptrType(phyMemory)).nil;
+		this.root = root_ !== undefined ? root_ : 0;
+		this.pte1 = pte1_ !== undefined ? pte1_ : 0;
+		this.pte2 = pte2_ !== undefined ? pte2_ : 0;
+		this.pte1Addr = pte1Addr_ !== undefined ? pte1Addr_ : 0;
+		this.pte2Addr = pte2Addr_ !== undefined ? pte2Addr_ : 0;
+	});
+	ptEntry = $pkg.ptEntry = $newType(4, $kindUint32, "arch8.ptEntry", "ptEntry", "lonnie.io/e8vm/arch8", null);
+	phyMemory = $pkg.phyMemory = $newType(0, $kindStruct, "arch8.phyMemory", "phyMemory", "lonnie.io/e8vm/arch8", function(npage_, pages_) {
+		this.$val = this;
+		this.npage = npage_ !== undefined ? npage_ : 0;
+		this.pages = pages_ !== undefined ? pages_ : false;
 	});
 	serial = $pkg.serial = $newType(0, $kindStruct, "arch8.serial", "serial", "lonnie.io/e8vm/arch8", function(intBus_, p_, Core_, IntIn_, IntOut_, Output_) {
 		this.$val = this;
@@ -16565,6 +16647,31 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		this.IntOut = IntOut_ !== undefined ? IntOut_ : 0;
 		this.Output = Output_ !== undefined ? Output_ : $ifaceNil;
 	});
+	ticker = $pkg.ticker = $newType(0, $kindStruct, "arch8.ticker", "ticker", "lonnie.io/e8vm/arch8", function(intBus_, nextTick_, Interval_, Noise_, Rand_, Code_) {
+		this.$val = this;
+		this.intBus = intBus_ !== undefined ? intBus_ : $ifaceNil;
+		this.nextTick = nextTick_ !== undefined ? nextTick_ : 0;
+		this.Interval = Interval_ !== undefined ? Interval_ : 0;
+		this.Noise = Noise_ !== undefined ? Noise_ : 0;
+		this.Rand = Rand_ !== undefined ? Rand_ : ($ptrType(rand.Rand)).nil;
+		this.Code = Code_ !== undefined ? Code_ : 0;
+	});
+	virtMemory = $pkg.virtMemory = $newType(0, $kindStruct, "arch8.virtMemory", "virtMemory", "lonnie.io/e8vm/arch8", function(phyMem_, ptable_) {
+		this.$val = this;
+		this.phyMem = phyMem_ !== undefined ? phyMem_ : ($ptrType(phyMemory)).nil;
+		this.ptable = ptable_ !== undefined ? ptable_ : ($ptrType(pageTable)).nil;
+	});
+	newConsole = function(p, i) {
+		var ret;
+		ret = new console.Ptr();
+		ret.intBus = i;
+		ret.p = p;
+		ret.Core = 0;
+		ret.IntIn = 8;
+		ret.IntOut = 9;
+		ret.Output = os.Stdout;
+		return ret;
+	};
 	console.Ptr.prototype.interrupt = function(code) {
 		var c;
 		c = this;
@@ -16586,6 +16693,195 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		}
 	};
 	console.prototype.Tick = function() { return this.$val.Tick(); };
+	newCPU = function(mem, i, index) {
+		var ret, intPage, x;
+		if (index >= 32) {
+			$panic(new $String("too many cores"));
+		}
+		ret = new cpu.Ptr();
+		ret.regs = makeRegs();
+		ret.phyMem = mem;
+		ret.virtMem = newVirtMemory(ret.phyMem);
+		ret.index = index;
+		intPage = ret.phyMem.Page(1);
+		if (intPage === ($ptrType(page)).nil) {
+			$panic(new $String("memory too small"));
+		}
+		ret.interrupt = newInterrupt(intPage, index);
+		ret.inst = i;
+		(x = ret.regs, (7 < 0 || 7 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + 7] = 32768);
+		return ret;
+	};
+	cpu.Ptr.prototype.UserMode = function() {
+		var c;
+		c = this;
+		return c.ring > 0;
+	};
+	cpu.prototype.UserMode = function() { return this.$val.UserMode(); };
+	cpu.Ptr.prototype.Reset = function() {
+		var c, i, x, x$1;
+		c = this;
+		i = 0;
+		while (i < 8) {
+			(x = c.regs, (i < 0 || i >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + i] = 0);
+			i = i + (1) >> 0;
+		}
+		(x$1 = c.regs, (7 < 0 || 7 >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + 7] = 32768);
+		c.virtMem.SetTable(0);
+		c.ring = 0;
+		c.interrupt.Disable();
+	};
+	cpu.prototype.Reset = function() { return this.$val.Reset(); };
+	cpu.Ptr.prototype.tick = function() {
+		var c, x, pc, _tuple, inst$1, e, x$1, x$2;
+		c = this;
+		pc = (x = c.regs, ((7 < 0 || 7 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + 7]));
+		_tuple = c.readWord(pc); inst$1 = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		(x$1 = c.regs, (7 < 0 || 7 >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + 7] = pc + 4 >>> 0);
+		if (!($interfaceIsEqual(c.inst, $ifaceNil))) {
+			e = c.inst.I(c, inst$1);
+			if (!(e === ($ptrType(Excep)).nil)) {
+				(x$2 = c.regs, (7 < 0 || 7 >= x$2.$length) ? $throwRuntimeError("index out of range") : x$2.$array[x$2.$offset + 7] = pc);
+				return e;
+			}
+		}
+		return ($ptrType(Excep)).nil;
+	};
+	cpu.prototype.tick = function() { return this.$val.tick(); };
+	cpu.Ptr.prototype.Interrupt = function(code) {
+		var c;
+		c = this;
+		c.interrupt.Issue(code);
+	};
+	cpu.prototype.Interrupt = function(code) { return this.$val.Interrupt(code); };
+	cpu.Ptr.prototype.readWord = function(addr) {
+		var c;
+		c = this;
+		return c.virtMem.ReadWord(addr, c.ring);
+	};
+	cpu.prototype.readWord = function(addr) { return this.$val.readWord(addr); };
+	cpu.Ptr.prototype.readByte = function(addr) {
+		var c;
+		c = this;
+		return c.virtMem.ReadByte(addr, c.ring);
+	};
+	cpu.prototype.readByte = function(addr) { return this.$val.readByte(addr); };
+	cpu.Ptr.prototype.writeWord = function(addr, v) {
+		var c;
+		c = this;
+		return c.virtMem.WriteWord(addr, c.ring, v);
+	};
+	cpu.prototype.writeWord = function(addr, v) { return this.$val.writeWord(addr, v); };
+	cpu.Ptr.prototype.writeByte = function(addr, v) {
+		var c;
+		c = this;
+		return c.virtMem.WriteByte(addr, c.ring, v);
+	};
+	cpu.prototype.writeByte = function(addr, v) { return this.$val.writeByte(addr, v); };
+	cpu.Ptr.prototype.Ienter = function(code, arg) {
+		var c, ksp, base, writeWord, writeByte, x, e, x$1, e$1, e$2, e$3, e$4, x$2, x$3, x$4, x$5;
+		c = this;
+		ksp = c.interrupt.kernelSP();
+		base = ksp - 16 >>> 0;
+		writeWord = (function(off, v) {
+			return c.virtMem.WriteWord(base + off >>> 0, 0, v);
+		});
+		writeByte = (function(off, b) {
+			return c.virtMem.WriteByte(base + off >>> 0, 0, b);
+		});
+		e = writeWord(0, (x = c.regs, ((5 < 0 || 5 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + 5])));
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		e$1 = writeWord(4, (x$1 = c.regs, ((6 < 0 || 6 >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + 6])));
+		if (!(e$1 === ($ptrType(Excep)).nil)) {
+			return e$1;
+		}
+		e$2 = writeWord(8, arg);
+		if (!(e$2 === ($ptrType(Excep)).nil)) {
+			return e$2;
+		}
+		e$3 = writeByte(12, code);
+		if (!(e$3 === ($ptrType(Excep)).nil)) {
+			return e$3;
+		}
+		e$4 = writeByte(13, c.ring);
+		if (!(e$4 === ($ptrType(Excep)).nil)) {
+			return e$4;
+		}
+		c.interrupt.Disable();
+		(x$2 = c.regs, (5 < 0 || 5 >= x$2.$length) ? $throwRuntimeError("index out of range") : x$2.$array[x$2.$offset + 5] = ksp);
+		(x$4 = c.regs, (6 < 0 || 6 >= x$4.$length) ? $throwRuntimeError("index out of range") : x$4.$array[x$4.$offset + 6] = (x$3 = c.regs, ((7 < 0 || 7 >= x$3.$length) ? $throwRuntimeError("index out of range") : x$3.$array[x$3.$offset + 7])));
+		(x$5 = c.regs, (7 < 0 || 7 >= x$5.$length) ? $throwRuntimeError("index out of range") : x$5.$array[x$5.$offset + 7] = c.interrupt.handlerPC());
+		c.ring = 0;
+		return ($ptrType(Excep)).nil;
+	};
+	cpu.prototype.Ienter = function(code, arg) { return this.$val.Ienter(code, arg); };
+	cpu.Ptr.prototype.Syscall = function() {
+		var c, x;
+		c = this;
+		(x = c.regs, (7 < 0 || 7 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + 7] = c.interrupt.syscallPC());
+		c.ring = 0;
+		return ($ptrType(Excep)).nil;
+	};
+	cpu.prototype.Syscall = function() { return this.$val.Syscall(); };
+	cpu.Ptr.prototype.Iret = function() {
+		var c, ksp, base, _tuple, sp, e, _tuple$1, ret, _tuple$2, code, _tuple$3, ring, x, x$1, x$2, x$3;
+		c = this;
+		if (!((c.ring === 0))) {
+			$panic(new $String("iret in userland"));
+		}
+		ksp = c.interrupt.kernelSP();
+		base = ksp - 16 >>> 0;
+		_tuple = c.readWord(base + 0 >>> 0); sp = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		_tuple$1 = c.readWord(base + 4 >>> 0); ret = _tuple$1[0]; e = _tuple$1[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		_tuple$2 = c.readByte(base + 12 >>> 0); code = _tuple$2[0]; e = _tuple$2[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		_tuple$3 = c.readByte(base + 13 >>> 0); ring = _tuple$3[0]; e = _tuple$3[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		(x$1 = c.regs, (7 < 0 || 7 >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + 7] = (x = c.regs, ((6 < 0 || 6 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + 6])));
+		(x$2 = c.regs, (6 < 0 || 6 >= x$2.$length) ? $throwRuntimeError("index out of range") : x$2.$array[x$2.$offset + 6] = ret);
+		(x$3 = c.regs, (5 < 0 || 5 >= x$3.$length) ? $throwRuntimeError("index out of range") : x$3.$array[x$3.$offset + 5] = sp);
+		c.ring = ring;
+		c.interrupt.Clear(code);
+		c.interrupt.Enable();
+		return ($ptrType(Excep)).nil;
+	};
+	cpu.prototype.Iret = function() { return this.$val.Iret(); };
+	cpu.Ptr.prototype.Tick = function() {
+		var c, _tuple, poll, code, e, _tuple$1, poll$1, code$1;
+		c = this;
+		_tuple = c.interrupt.Poll(); poll = _tuple[0]; code = _tuple[1];
+		if (poll) {
+			return c.Ienter(code, 0);
+		}
+		e = c.tick();
+		if (!(e === ($ptrType(Excep)).nil)) {
+			c.interrupt.Issue(e.Code);
+			_tuple$1 = c.interrupt.Poll(); poll$1 = _tuple$1[0]; code$1 = _tuple$1[1];
+			if (poll$1) {
+				if (!((code$1 === e.Code))) {
+					$panic(new $String("interrupt code is different"));
+				}
+				return c.Ienter(code$1, e.Arg);
+			}
+		}
+		return e;
+	};
+	cpu.prototype.Tick = function() { return this.$val.Tick(); };
 	newExcep = function(c, s) {
 		var ret;
 		ret = new Excep.Ptr();
@@ -16599,18 +16895,341 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		return e.Err.Error();
 	};
 	Excep.prototype.Error = function() { return this.$val.Error(); };
+	newPageFault = function(va) {
+		var ret;
+		ret = newExcep(6, "page fault");
+		ret.Arg = va;
+		return ret;
+	};
+	newPageReadonly = function(va) {
+		var ret;
+		ret = newExcep(7, "page read-only");
+		ret.Arg = va;
+		return ret;
+	};
+	instArch8.Ptr.prototype.I = function(cpu$1, in$1) {
+		var i, op;
+		i = this;
+		if (((in$1 >>> 31 >>> 0)) === 0) {
+			op = (((in$1 >>> 24 >>> 0)) & 255) >>> 0;
+			if (op === 0) {
+				return i.reg.I(cpu$1, in$1);
+			} else if (op < 32) {
+				return i.imm.I(cpu$1, in$1);
+			} else if (op < 64) {
+				return i.br.I(cpu$1, in$1);
+			} else if (op < 128) {
+				return i.sys.I(cpu$1, in$1);
+			} else {
+				$panic(new $String("bug"));
+			}
+		}
+		return i.jmp.I(cpu$1, in$1);
+	};
+	instArch8.prototype.I = function(cpu$1, in$1) { return this.$val.I(cpu$1, in$1); };
+	instBr.Ptr.prototype.I = function(cpu$1, in$1) {
+		var i, op, src1, src2, im, x, s1, x$1, s2, x$2, pc, br, _ref, x$3;
+		i = this;
+		op = (((in$1 >>> 24 >>> 0)) & 255) >>> 0;
+		src1 = (((in$1 >>> 21 >>> 0)) & 7) >>> 0;
+		src2 = (((in$1 >>> 18 >>> 0)) & 7) >>> 0;
+		im = (in$1 & 262143) >>> 0;
+		s1 = (x = cpu$1.regs, ((src1 < 0 || src1 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + src1]));
+		s2 = (x$1 = cpu$1.regs, ((src2 < 0 || src2 >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + src2]));
+		pc = (x$2 = cpu$1.regs, ((7 < 0 || 7 >= x$2.$length) ? $throwRuntimeError("index out of range") : x$2.$array[x$2.$offset + 7]));
+		br = pc + ((((im << 14 >>> 0) >> 0) >> 12 >> 0) >>> 0) >>> 0;
+		_ref = op;
+		if (_ref === 32) {
+			if (!((s1 === s2))) {
+				pc = br;
+			}
+		} else if (_ref === 33) {
+			if (s1 === s2) {
+				pc = br;
+			}
+		} else {
+			return errInvalidInst;
+		}
+		(x$3 = cpu$1.regs, (7 < 0 || 7 >= x$3.$length) ? $throwRuntimeError("index out of range") : x$3.$array[x$3.$offset + 7] = pc);
+		return ($ptrType(Excep)).nil;
+	};
+	instBr.prototype.I = function(cpu$1, in$1) { return this.$val.I(cpu$1, in$1); };
+	instImm.Ptr.prototype.I = function(cpu$1, in$1) {
+		var i, op, dest, src, im, x, s, x$1, d, ims, addr, e, b, _ref, _tuple, _tuple$1, _tuple$2, x$2;
+		i = this;
+		op = (((in$1 >>> 24 >>> 0)) & 255) >>> 0;
+		dest = (((in$1 >>> 21 >>> 0)) & 7) >>> 0;
+		src = (((in$1 >>> 18 >>> 0)) & 7) >>> 0;
+		im = (in$1 & 65535) >>> 0;
+		s = (x = cpu$1.regs, ((src < 0 || src >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + src]));
+		d = (x$1 = cpu$1.regs, ((dest < 0 || dest >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + dest]));
+		ims = ((((im << 16 >>> 0) >> 0) >> 16 >> 0) >>> 0);
+		addr = s + ims >>> 0;
+		e = ($ptrType(Excep)).nil;
+		b = 0;
+		_ref = op;
+		if (_ref === 0) {
+			$panic(new $String("register based instruction"));
+		} else if (_ref === 1) {
+			d = s + ims >>> 0;
+		} else if (_ref === 2) {
+			if ((s >> 0) < (ims >> 0)) {
+				d = 1;
+			} else {
+				d = 0;
+			}
+		} else if (_ref === 3) {
+			d = (s & im) >>> 0;
+		} else if (_ref === 4) {
+			d = (s | im) >>> 0;
+		} else if (_ref === 5) {
+			d = im << 16 >>> 0;
+		} else if (_ref === 6) {
+			_tuple = cpu$1.readWord(addr); d = _tuple[0]; e = _tuple[1];
+		} else if (_ref === 7) {
+			_tuple$1 = cpu$1.readByte(addr); b = _tuple$1[0]; e = _tuple$1[1];
+			d = (((b << 24 >> 24) >> 0) >>> 0);
+		} else if (_ref === 8) {
+			_tuple$2 = cpu$1.readByte(addr); b = _tuple$2[0]; e = _tuple$2[1];
+			d = (b >>> 0);
+		} else if (_ref === 9) {
+			e = cpu$1.writeWord(addr, d);
+		} else if (_ref === 10) {
+			e = cpu$1.writeByte(addr, (d << 24 >>> 24));
+		} else {
+			return errInvalidInst;
+		}
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		(x$2 = cpu$1.regs, (dest < 0 || dest >= x$2.$length) ? $throwRuntimeError("index out of range") : x$2.$array[x$2.$offset + dest] = d);
+		return ($ptrType(Excep)).nil;
+	};
+	instImm.prototype.I = function(cpu$1, in$1) { return this.$val.I(cpu$1, in$1); };
+	instJmp.Ptr.prototype.I = function(cpu$1, in$1) {
+		var i, op, off, x, pc, to, _ref, x$1, x$2;
+		i = this;
+		op = (((in$1 >>> 30 >>> 0)) & 3) >>> 0;
+		off = (in$1 & 1073741823) >>> 0;
+		pc = (x = cpu$1.regs, ((7 < 0 || 7 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + 7]));
+		to = pc + ((off << 2 >>> 0)) >>> 0;
+		_ref = op;
+		if (_ref === 2) {
+		} else if (_ref === 3) {
+			(x$1 = cpu$1.regs, (6 < 0 || 6 >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + 6] = pc);
+		} else {
+			return errInvalidInst;
+		}
+		(x$2 = cpu$1.regs, (7 < 0 || 7 >= x$2.$length) ? $throwRuntimeError("index out of range") : x$2.$array[x$2.$offset + 7] = to);
+		return ($ptrType(Excep)).nil;
+	};
+	instJmp.prototype.I = function(cpu$1, in$1) { return this.$val.I(cpu$1, in$1); };
+	instReg.Ptr.prototype.I = function(cpu$1, in$1) {
+		var i, dest, src1, src2, shift, isFloat, funct, x, s1, x$1, s2, d, _ref, y, y$1, y$2, y$3, x$2, x$3, _q, _q$1, _r, _r$1, f1, f2, fd, _ref$1, x$4;
+		i = this;
+		if (!(((((((in$1 >>> 24 >>> 0)) & 255) >>> 0)) === 0))) {
+			$panic(new $String("not a register inst"));
+		}
+		dest = (((in$1 >>> 21 >>> 0)) & 7) >>> 0;
+		src1 = (((in$1 >>> 18 >>> 0)) & 7) >>> 0;
+		src2 = (((in$1 >>> 15 >>> 0)) & 7) >>> 0;
+		shift = (((in$1 >>> 10 >>> 0)) & 31) >>> 0;
+		isFloat = (((in$1 >>> 8 >>> 0)) & 1) >>> 0;
+		funct = (in$1 & 255) >>> 0;
+		s1 = (x = cpu$1.regs, ((src1 < 0 || src1 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + src1]));
+		s2 = (x$1 = cpu$1.regs, ((src2 < 0 || src2 >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + src2]));
+		d = 0;
+		if (isFloat === 0) {
+			_ref = funct;
+			if (_ref === 0) {
+				d = (y = shift, y < 32 ? (s1 << y) : 0) >>> 0;
+			} else if (_ref === 1) {
+				d = (y$1 = shift, y$1 < 32 ? (s1 >>> y$1) : 0) >>> 0;
+			} else if (_ref === 2) {
+				d = ((((s1 >> 0) >> $min(shift, 31)) >> 0) >>> 0);
+			} else if (_ref === 3) {
+				d = (y$2 = s2, y$2 < 32 ? (s1 << y$2) : 0) >>> 0;
+			} else if (_ref === 4) {
+				d = (y$3 = s2, y$3 < 32 ? (s1 >>> y$3) : 0) >>> 0;
+			} else if (_ref === 5) {
+				d = ((((s1 >> 0) >> $min(s2, 31)) >> 0) >>> 0);
+			} else if (_ref === 6) {
+				d = s1 + s2 >>> 0;
+			} else if (_ref === 7) {
+				d = s1 - s2 >>> 0;
+			} else if (_ref === 8) {
+				d = (s1 & s2) >>> 0;
+			} else if (_ref === 9) {
+				d = (s1 | s2) >>> 0;
+			} else if (_ref === 10) {
+				d = (s1 ^ s2) >>> 0;
+			} else if (_ref === 11) {
+				d = ~(((s1 | s2) >>> 0)) >>> 0;
+			} else if (_ref === 12) {
+				if ((s1 >> 0) < (s2 >> 0)) {
+					d = 1;
+				} else {
+					d = 0;
+				}
+			} else if (_ref === 13) {
+				if (s1 < s2) {
+					d = 1;
+				} else {
+					d = 0;
+				}
+			} else if (_ref === 14) {
+				d = ((x$2 = (s1 >> 0), x$3 = (s2 >> 0), (((x$2 >>> 16 << 16) * x$3 >> 0) + (x$2 << 16 >>> 16) * x$3) >> 0) >>> 0);
+			} else if (_ref === 15) {
+				d = (((s1 >>> 16 << 16) * s2 >>> 0) + (s1 << 16 >>> 16) * s2) >>> 0;
+			} else if (_ref === 16) {
+				if (s2 === 0) {
+					d = 0;
+				} else {
+					d = ((_q = (s1 >> 0) / (s2 >> 0), (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero")) >>> 0);
+				}
+			} else if (_ref === 17) {
+				if (s2 === 0) {
+					d = 0;
+				} else {
+					d = (_q$1 = s1 / s2, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >>> 0 : $throwRuntimeError("integer divide by zero"));
+				}
+			} else if (_ref === 18) {
+				if (s2 === 0) {
+					d = 0;
+				} else {
+					d = ((_r = (s1 >> 0) % (s2 >> 0), _r === _r ? _r : $throwRuntimeError("integer divide by zero")) >>> 0);
+				}
+			} else if (_ref === 19) {
+				if (s2 === 0) {
+					d = 0;
+				} else {
+					d = (_r$1 = s1 % s2, _r$1 === _r$1 ? _r$1 : $throwRuntimeError("integer divide by zero"));
+				}
+			} else {
+				return errInvalidInst;
+			}
+		} else {
+			f1 = math.Float32frombits(s1);
+			f2 = math.Float32frombits(s2);
+			fd = 0;
+			_ref$1 = funct;
+			if (_ref$1 === 0) {
+				fd = f1 + f2;
+			} else if (_ref$1 === 1) {
+				fd = f1 - f2;
+			} else if (_ref$1 === 2) {
+				fd = f1 * f2;
+			} else if (_ref$1 === 3) {
+				fd = f1 / f2;
+			} else if (_ref$1 === 4) {
+				d = (f1 >> 0);
+			} else {
+				return errInvalidInst;
+			}
+			if (!((funct === 4))) {
+				d = math.Float32bits(fd);
+			}
+		}
+		(x$4 = cpu$1.regs, (dest < 0 || dest >= x$4.$length) ? $throwRuntimeError("index out of range") : x$4.$array[x$4.$offset + dest] = d);
+		return ($ptrType(Excep)).nil;
+	};
+	instReg.prototype.I = function(cpu$1, in$1) { return this.$val.I(cpu$1, in$1); };
+	instSys.Ptr.prototype.I = function(cpu$1, in$1) {
+		var i, op, src, x, s, _ref, x$1;
+		i = this;
+		op = (((in$1 >>> 24 >>> 0)) & 255) >>> 0;
+		src = (((in$1 >>> 21 >>> 0)) & 7) >>> 0;
+		s = (x = cpu$1.regs, ((src < 0 || src >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + src]));
+		_ref = op;
+		if (_ref === 64) {
+			return errHalt;
+		} else if (_ref === 65) {
+			if (!cpu$1.UserMode()) {
+				return errInvalidInst;
+			}
+			return cpu$1.Syscall();
+		} else if (_ref === 66) {
+			cpu$1.ring = 1;
+		} else if (_ref === 67) {
+			if (cpu$1.UserMode()) {
+				return errInvalidInst;
+			}
+			cpu$1.virtMem.SetTable(s);
+		} else if (_ref === 68) {
+			if (cpu$1.UserMode()) {
+				return errInvalidInst;
+			}
+			return cpu$1.Iret();
+		} else if (_ref === 69) {
+			s = (cpu$1.index >>> 0);
+		} else {
+			return errInvalidInst;
+		}
+		(x$1 = cpu$1.regs, (src < 0 || src >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + src] = s);
+		return ($ptrType(Excep)).nil;
+	};
+	instSys.prototype.I = function(cpu$1, in$1) { return this.$val.I(cpu$1, in$1); };
+	intAllCores = function(bus, code) {
+		var ncore, i;
+		ncore = bus.Ncore();
+		i = 0;
+		while (i < ncore) {
+			bus.Interrupt(code, i);
+			i = i + (1) << 24 >>> 24;
+		}
+	};
+	newInterrupt = function(p, core) {
+		var ret, x;
+		ret = new interrupt.Ptr();
+		ret.p = p;
+		ret.base = (x = (core >>> 0), (((x >>> 16 << 16) * 128 >>> 0) + (x << 16 >>> 16) * 128) >>> 0);
+		if ((ret.base + 128 >>> 0) > 4096) {
+			$panic(new $String("bug"));
+		}
+		return ret;
+	};
+	interrupt.Ptr.prototype.readWord = function(off) {
+		var in$1;
+		in$1 = this;
+		return in$1.p.ReadWord(in$1.base + off >>> 0);
+	};
+	interrupt.prototype.readWord = function(off) { return this.$val.readWord(off); };
 	interrupt.Ptr.prototype.readByte = function(off) {
 		var in$1;
 		in$1 = this;
 		return in$1.p.ReadByte(in$1.base + off >>> 0);
 	};
 	interrupt.prototype.readByte = function(off) { return this.$val.readByte(off); };
+	interrupt.Ptr.prototype.writeWord = function(off, v) {
+		var in$1;
+		in$1 = this;
+		in$1.p.WriteWord(in$1.base + off >>> 0, v);
+	};
+	interrupt.prototype.writeWord = function(off, v) { return this.$val.writeWord(off, v); };
 	interrupt.Ptr.prototype.writeByte = function(off, v) {
 		var in$1;
 		in$1 = this;
 		in$1.p.WriteByte(in$1.base + off >>> 0, v);
 	};
 	interrupt.prototype.writeByte = function(off, v) { return this.$val.writeByte(off, v); };
+	interrupt.Ptr.prototype.kernelSP = function() {
+		var in$1;
+		in$1 = this;
+		return in$1.readWord(4);
+	};
+	interrupt.prototype.kernelSP = function() { return this.$val.kernelSP(); };
+	interrupt.Ptr.prototype.handlerPC = function() {
+		var in$1;
+		in$1 = this;
+		return in$1.readWord(8);
+	};
+	interrupt.prototype.handlerPC = function() { return this.$val.handlerPC(); };
+	interrupt.Ptr.prototype.syscallPC = function() {
+		var in$1;
+		in$1 = this;
+		return in$1.readWord(12);
+	};
+	interrupt.prototype.syscallPC = function() { return this.$val.syscallPC(); };
 	interrupt.Ptr.prototype.Issue = function(i) {
 		var in$1, _q, off, b, y, _r;
 		in$1 = this;
@@ -16705,6 +17324,175 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		return [false, 0];
 	};
 	interrupt.prototype.Poll = function() { return this.$val.Poll(); };
+	NewMachine = $pkg.NewMachine = function(memSize, ncore) {
+		var ret, p;
+		ret = new Machine.Ptr();
+		ret.phyMem = newPhyMemory(memSize);
+		ret.inst = new instArch8.Ptr();
+		ret.cores = newMultiCore(ncore, ret.phyMem, ret.inst);
+		p = ret.phyMem.Page(2);
+		ret.serial = newSerial(p, ret.cores);
+		ret.console = newConsole(p, ret.cores);
+		ret.addDevice(newTicker(ret.cores));
+		ret.addDevice(ret.serial);
+		ret.addDevice(ret.console);
+		return ret;
+	};
+	Machine.Ptr.prototype.SetOutput = function(w) {
+		var m;
+		m = this;
+		m.serial.Output = w;
+		m.console.Output = w;
+	};
+	Machine.prototype.SetOutput = function(w) { return this.$val.SetOutput(w); };
+	Machine.Ptr.prototype.addDevice = function(d) {
+		var m;
+		m = this;
+		m.devices = $append(m.devices, d);
+	};
+	Machine.prototype.addDevice = function(d) { return this.$val.addDevice(d); };
+	Machine.Ptr.prototype.Tick = function() {
+		var m, _ref, _i, d;
+		m = this;
+		_ref = m.devices;
+		_i = 0;
+		while (_i < _ref.$length) {
+			d = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			d.Tick();
+			_i++;
+		}
+		return m.cores.Tick();
+	};
+	Machine.prototype.Tick = function() { return this.$val.Tick(); };
+	Machine.Ptr.prototype.Run = function(nticks) {
+		var m, n, i, e;
+		m = this;
+		n = 0;
+		i = 0;
+		while ((nticks === 0) || i < nticks) {
+			e = m.Tick();
+			n = n + (1) >> 0;
+			if (!(e === ($ptrType(CoreExcep)).nil)) {
+				return [n, e];
+			}
+			i = i + (1) >> 0;
+		}
+		return [n, ($ptrType(CoreExcep)).nil];
+	};
+	Machine.prototype.Run = function(nticks) { return this.$val.Run(nticks); };
+	Machine.Ptr.prototype.LoadImage = function(r, offset) {
+		var m, _r, _q, pn, p, _tuple, e;
+		m = this;
+		if (!(((_r = offset % 4096, _r === _r ? _r : $throwRuntimeError("integer divide by zero")) === 0))) {
+			$panic(new $String("boot image not page aligned"));
+		}
+		pn = (_q = offset / 4096, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >>> 0 : $throwRuntimeError("integer divide by zero"));
+		while (true) {
+			p = m.phyMem.Page(pn);
+			if (p === ($ptrType(page)).nil) {
+				return errOutOfRange;
+			}
+			_tuple = r.Read(p.Bytes); e = _tuple[1];
+			if ($interfaceIsEqual(e, io.EOF)) {
+				return $ifaceNil;
+			} else if (!($interfaceIsEqual(e, $ifaceNil))) {
+				return e;
+			}
+			pn = pn + (1) >>> 0;
+		}
+	};
+	Machine.prototype.LoadImage = function(r, offset) { return this.$val.LoadImage(r, offset); };
+	Machine.Ptr.prototype.PrintCoreStatus = function() {
+		var m;
+		m = this;
+		m.cores.PrintStatus();
+	};
+	Machine.prototype.PrintCoreStatus = function() { return this.$val.PrintCoreStatus(); };
+	newMultiCore = function(ncore, mem, i) {
+		var ret, _ref, _i, ind, x;
+		if (ncore > 32) {
+			$panic(new $String("too many cores"));
+		}
+		ret = new multiCore.Ptr();
+		ret.cores = ($sliceType(($ptrType(cpu)))).make(ncore);
+		ret.phyMem = mem;
+		_ref = ret.cores;
+		_i = 0;
+		while (_i < _ref.$length) {
+			ind = _i;
+			(x = ret.cores, (ind < 0 || ind >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + ind] = newCPU(mem, i, (ind << 24 >>> 24)));
+			_i++;
+		}
+		return ret;
+	};
+	multiCore.Ptr.prototype.Tick = function() {
+		var c, _ref, _i, i, core, e;
+		c = this;
+		_ref = c.cores;
+		_i = 0;
+		while (_i < _ref.$length) {
+			i = _i;
+			core = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			e = core.Tick();
+			if (!(e === ($ptrType(Excep)).nil)) {
+				return new CoreExcep.Ptr(i, e);
+			}
+			_i++;
+		}
+		return ($ptrType(CoreExcep)).nil;
+	};
+	multiCore.prototype.Tick = function() { return this.$val.Tick(); };
+	multiCore.Ptr.prototype.Ncore = function() {
+		var c;
+		c = this;
+		return (c.cores.$length << 24 >>> 24);
+	};
+	multiCore.prototype.Ncore = function() { return this.$val.Ncore(); };
+	multiCore.Ptr.prototype.Interrupt = function(code, core) {
+		var c, x;
+		c = this;
+		if ((core >> 0) >= c.cores.$length) {
+			$panic(new $String("out of cores"));
+		}
+		(x = c.cores, ((core < 0 || core >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + core])).Interrupt(code);
+	};
+	multiCore.prototype.Interrupt = function(code, core) { return this.$val.Interrupt(code, core); };
+	multiCore.Ptr.prototype.PrintStatus = function() {
+		var c, _ref, _i, i, core;
+		c = this;
+		_ref = c.cores;
+		_i = 0;
+		while (_i < _ref.$length) {
+			i = _i;
+			core = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			if (c.cores.$length > 1) {
+				fmt.Printf("[core %d]\n", new ($sliceType($emptyInterface))([new $Int(i)]));
+			}
+			printCPUStatus(core);
+			fmt.Println(new ($sliceType($emptyInterface))([]));
+			_i++;
+		}
+	};
+	multiCore.prototype.PrintStatus = function() { return this.$val.PrintStatus(); };
+	printCPUStatus = function(c) {
+		var p;
+		p = (function(name, reg) {
+			var x, x$1;
+			fmt.Printf(" %3s = 0x%08x %-11d\n", new ($sliceType($emptyInterface))([new $String(name), new $Uint32((x = c.regs, ((reg < 0 || reg >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + reg]))), new $Int32(((x$1 = c.regs, ((reg < 0 || reg >= x$1.$length) ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + reg])) >> 0))]));
+		});
+		p("r0", 0);
+		p("r1", 1);
+		p("r2", 2);
+		p("r3", 3);
+		p("r4", 4);
+		p("sp", 5);
+		p("ret", 6);
+		p("pc", 7);
+		fmt.Printf("ring = %d\n", new ($sliceType($emptyInterface))([new $Uint8(c.ring)]));
+	};
+	newPage = function() {
+		return new page.Ptr(($sliceType($Uint8)).make(4096));
+	};
 	page.Ptr.prototype.ReadByte = function(offset) {
 		var p, x, x$1, _r;
 		p = this;
@@ -16735,6 +17523,231 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		$pkg.Endian.PutUint32($subslice(p.Bytes, offset, (offset + 4 >>> 0)), w);
 	};
 	page.prototype.WriteWord = function(offset, w) { return this.$val.WriteWord(offset, w); };
+	newPageTable = function(m, addr) {
+		var _r, ret;
+		addr = addr - ((_r = addr % 4096, _r === _r ? _r : $throwRuntimeError("integer divide by zero"))) >>> 0;
+		ret = new pageTable.Ptr();
+		ret.mem = m;
+		ret.root = addr;
+		return ret;
+	};
+	ptEntry.prototype.testBit = function(n) {
+		var pte, y;
+		pte = this.$val !== undefined ? this.$val : this;
+		return !((((((pte >>> 0) & (((y = n, y < 32 ? (1 << y) : 0) >>> 0))) >>> 0)) === 0));
+	};
+	$ptrType(ptEntry).prototype.testBit = function(n) { return new ptEntry(this.$get()).testBit(n); };
+	$ptrType(ptEntry).prototype.setBit = function(n) {
+		var pte, y;
+		pte = this;
+		pte.$set(((((pte.$get() >>> 0) | (((y = n, y < 32 ? (1 << y) : 0) >>> 0))) >>> 0) >>> 0));
+	};
+	ptEntry.prototype.pn = function() {
+		var pte, _q;
+		pte = this.$val !== undefined ? this.$val : this;
+		return ((_q = pte / 4096, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >>> 0 : $throwRuntimeError("integer divide by zero")) >>> 0);
+	};
+	$ptrType(ptEntry).prototype.pn = function() { return new ptEntry(this.$get()).pn(); };
+	ptEntry.prototype.test = function(addr, ring) {
+		var pte;
+		pte = this.$val !== undefined ? this.$val : this;
+		if (!new ptEntry(pte).testBit(0)) {
+			return newPageFault(addr);
+		}
+		if (ring > 0 && !new ptEntry(pte).testBit(4)) {
+			return newPageFault(addr);
+		}
+		return ($ptrType(Excep)).nil;
+	};
+	$ptrType(ptEntry).prototype.test = function(addr, ring) { return new ptEntry(this.$get()).test(addr, ring); };
+	pageTable.Ptr.prototype.Translate = function(addr, ring) {
+		var pt, _q, vpn, _r, off, _q$1, index1, _r$1, index2, _tuple, w, e, pn1, _tuple$1, ppn;
+		pt = this;
+		vpn = (_q = addr / 4096, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >>> 0 : $throwRuntimeError("integer divide by zero"));
+		off = (_r = addr % 4096, _r === _r ? _r : $throwRuntimeError("integer divide by zero"));
+		index1 = (_q$1 = vpn / 1024, (_q$1 === _q$1 && _q$1 !== 1/0 && _q$1 !== -1/0) ? _q$1 >>> 0 : $throwRuntimeError("integer divide by zero"));
+		index2 = (_r$1 = vpn % 1024, _r$1 === _r$1 ? _r$1 : $throwRuntimeError("integer divide by zero"));
+		pt.pte1Addr = pt.root + ((((index1 >>> 16 << 16) * 4 >>> 0) + (index1 << 16 >>> 16) * 4) >>> 0) >>> 0;
+		_tuple = pt.mem.ReadWord(pt.pte1Addr); w = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		pt.pte1 = (w >>> 0);
+		e = new ptEntry(pt.pte1).test(addr, ring);
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		pn1 = new ptEntry(pt.pte1).pn();
+		pt.pte2Addr = ((((pn1 >>> 16 << 16) * 4096 >>> 0) + (pn1 << 16 >>> 16) * 4096) >>> 0) + ((((index2 >>> 16 << 16) * 4 >>> 0) + (index2 << 16 >>> 16) * 4) >>> 0) >>> 0;
+		_tuple$1 = pt.mem.ReadWord(pt.pte2Addr); w = _tuple$1[0]; e = _tuple$1[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		pt.pte2 = (w >>> 0);
+		e = new ptEntry(pt.pte2).test(addr, ring);
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		ppn = new ptEntry(pt.pte2).pn();
+		return [((((ppn >>> 16 << 16) * 4096 >>> 0) + (ppn << 16 >>> 16) * 4096) >>> 0) + off >>> 0, ($ptrType(Excep)).nil];
+	};
+	pageTable.prototype.Translate = function(addr, ring) { return this.$val.Translate(addr, ring); };
+	pageTable.Ptr.prototype.updatePte = function() {
+		var pt, e;
+		pt = this;
+		e = pt.mem.WriteWord(pt.pte1Addr, (pt.pte1 >>> 0));
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		e = pt.mem.WriteWord(pt.pte2Addr, (pt.pte2 >>> 0));
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		return ($ptrType(Excep)).nil;
+	};
+	pageTable.prototype.updatePte = function() { return this.$val.updatePte(); };
+	pageTable.Ptr.prototype.TranslateRead = function(addr, ring) {
+		var pt, _tuple, ret, e;
+		pt = this;
+		_tuple = pt.Translate(addr, ring); ret = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		new ($ptrType(ptEntry))(function() { return this.$target.pte1; }, function($v) { this.$target.pte1 = $v; }, pt).setBit(2);
+		new ($ptrType(ptEntry))(function() { return this.$target.pte2; }, function($v) { this.$target.pte2 = $v; }, pt).setBit(2);
+		e = pt.updatePte();
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		return [ret, ($ptrType(Excep)).nil];
+	};
+	pageTable.prototype.TranslateRead = function(addr, ring) { return this.$val.TranslateRead(addr, ring); };
+	pageTable.Ptr.prototype.TranslateWrite = function(addr, ring) {
+		var pt, _tuple, ret, e;
+		pt = this;
+		_tuple = pt.Translate(addr, ring); ret = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		if (new ptEntry(pt.pte1).testBit(1) || new ptEntry(pt.pte2).testBit(1)) {
+			return [0, newPageReadonly(addr)];
+		}
+		new ($ptrType(ptEntry))(function() { return this.$target.pte1; }, function($v) { this.$target.pte1 = $v; }, pt).setBit(2);
+		new ($ptrType(ptEntry))(function() { return this.$target.pte1; }, function($v) { this.$target.pte1 = $v; }, pt).setBit(3);
+		new ($ptrType(ptEntry))(function() { return this.$target.pte2; }, function($v) { this.$target.pte2 = $v; }, pt).setBit(2);
+		new ($ptrType(ptEntry))(function() { return this.$target.pte2; }, function($v) { this.$target.pte2 = $v; }, pt).setBit(3);
+		e = pt.updatePte();
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		return [ret, ($ptrType(Excep)).nil];
+	};
+	pageTable.prototype.TranslateWrite = function(addr, ring) { return this.$val.TranslateWrite(addr, ring); };
+	newPhyMemory = function(size) {
+		var _r, ret, _q;
+		if (!(((_r = size % 4096, _r === _r ? _r : $throwRuntimeError("integer divide by zero")) === 0))) {
+			$panic(new $String("size misaligned"));
+		}
+		ret = new phyMemory.Ptr();
+		ret.pages = new $Map();
+		ret.npage = (_q = size / 4096, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >>> 0 : $throwRuntimeError("integer divide by zero"));
+		return ret;
+	};
+	phyMemory.Ptr.prototype.Size = function() {
+		var pm, x;
+		pm = this;
+		return (x = pm.npage, (((x >>> 16 << 16) * 4096 >>> 0) + (x << 16 >>> 16) * 4096) >>> 0);
+	};
+	phyMemory.prototype.Size = function() { return this.$val.Size(); };
+	phyMemory.Ptr.prototype.Page = function(pn) {
+		var pm, _tuple, _entry, ret, found, _key;
+		pm = this;
+		if (pn >= pm.npage) {
+			return ($ptrType(page)).nil;
+		}
+		_tuple = (_entry = pm.pages[pn], _entry !== undefined ? [_entry.v, true] : [($ptrType(page)).nil, false]); ret = _tuple[0]; found = _tuple[1];
+		if (!found) {
+			ret = newPage();
+			_key = pn; (pm.pages || $throwRuntimeError("assignment to entry in nil map"))[_key] = { k: _key, v: ret };
+		}
+		return ret;
+	};
+	phyMemory.prototype.Page = function(pn) { return this.$val.Page(pn); };
+	phyMemory.Ptr.prototype.pageForByte = function(addr) {
+		var pm, _q, p;
+		pm = this;
+		p = pm.Page((_q = addr / 4096, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >>> 0 : $throwRuntimeError("integer divide by zero")));
+		if (p === ($ptrType(page)).nil) {
+			return [($ptrType(page)).nil, errOutOfRange];
+		}
+		return [p, ($ptrType(Excep)).nil];
+	};
+	phyMemory.prototype.pageForByte = function(addr) { return this.$val.pageForByte(addr); };
+	phyMemory.Ptr.prototype.pageForWord = function(addr) {
+		var pm, _r;
+		pm = this;
+		if (!(((_r = addr % 4, _r === _r ? _r : $throwRuntimeError("integer divide by zero")) === 0))) {
+			return [($ptrType(page)).nil, errMisalign];
+		}
+		return pm.pageForByte(addr);
+	};
+	phyMemory.prototype.pageForWord = function(addr) { return this.$val.pageForWord(addr); };
+	phyMemory.Ptr.prototype.ReadByte = function(addr) {
+		var pm, _tuple, p, e;
+		pm = this;
+		_tuple = pm.pageForByte(addr); p = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		return [p.ReadByte(addr), ($ptrType(Excep)).nil];
+	};
+	phyMemory.prototype.ReadByte = function(addr) { return this.$val.ReadByte(addr); };
+	phyMemory.Ptr.prototype.WriteByte = function(addr, v) {
+		var pm, _tuple, p, e;
+		pm = this;
+		_tuple = pm.pageForByte(addr); p = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		p.WriteByte(addr, v);
+		return e;
+	};
+	phyMemory.prototype.WriteByte = function(addr, v) { return this.$val.WriteByte(addr, v); };
+	phyMemory.Ptr.prototype.ReadWord = function(addr) {
+		var pm, _tuple, p, e;
+		pm = this;
+		_tuple = pm.pageForWord(addr); p = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		return [p.ReadWord(addr), ($ptrType(Excep)).nil];
+	};
+	phyMemory.prototype.ReadWord = function(addr) { return this.$val.ReadWord(addr); };
+	phyMemory.Ptr.prototype.WriteWord = function(addr, v) {
+		var pm, _tuple, p, e;
+		pm = this;
+		_tuple = pm.pageForWord(addr); p = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		p.WriteWord(addr, v);
+		return ($ptrType(Excep)).nil;
+	};
+	phyMemory.prototype.WriteWord = function(addr, v) { return this.$val.WriteWord(addr, v); };
+	makeRegs = function() {
+		return ($sliceType($Uint32)).make(8);
+	};
+	newSerial = function(p, i) {
+		var ret;
+		ret = new serial.Ptr();
+		ret.intBus = i;
+		ret.p = p;
+		ret.Core = 0;
+		ret.IntIn = 8;
+		ret.IntOut = 9;
+		ret.Output = os.Stdout;
+		return ret;
+	};
 	serial.Ptr.prototype.interrupt = function(code) {
 		var s;
 		s = this;
@@ -16859,6 +17872,125 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		s.countDown();
 	};
 	serial.prototype.Tick = function() { return this.$val.Tick(); };
+	newTicker = function(bus) {
+		var ret;
+		ret = new ticker.Ptr();
+		ret.intBus = bus;
+		ret.Interval = 1000;
+		ret.Noise = 10;
+		ret.Rand = rand.New(rand.NewSource(time.Now().UnixNano()));
+		ret.Code = 2;
+		ret.reset();
+		return ret;
+	};
+	ticker.Ptr.prototype.reset = function() {
+		var t, noise, _q, next;
+		t = this;
+		if (t.Noise < 0) {
+			$panic(new $String("negative ticker noise"));
+		}
+		if (t.Interval < 0) {
+			$panic(new $String("negative ticker interval"));
+		}
+		noise = 0;
+		if (t.Noise > 0) {
+			noise = t.Rand.Int31n(t.Noise) - (_q = t.Noise / 2, (_q === _q && _q !== 1/0 && _q !== -1/0) ? _q >> 0 : $throwRuntimeError("integer divide by zero")) >> 0;
+		}
+		next = t.Interval + noise >> 0;
+		if (next < 0) {
+			next = 0;
+		}
+		t.nextTick = next;
+	};
+	ticker.prototype.reset = function() { return this.$val.reset(); };
+	ticker.Ptr.prototype.Tick = function() {
+		var t;
+		t = this;
+		if (t.nextTick < 0) {
+			$panic(new $String("bug"));
+		}
+		if (t.nextTick === 0) {
+			intAllCores(t.intBus, t.Code);
+			t.reset();
+		} else {
+			t.nextTick = t.nextTick - (1) >> 0;
+		}
+	};
+	ticker.prototype.Tick = function() { return this.$val.Tick(); };
+	newVirtMemory = function(phy) {
+		var ret;
+		ret = new virtMemory.Ptr();
+		ret.phyMem = phy;
+		return ret;
+	};
+	virtMemory.Ptr.prototype.SetTable = function(root) {
+		var vm;
+		vm = this;
+		if (root === 0) {
+			vm.ptable = ($ptrType(pageTable)).nil;
+		} else {
+			vm.ptable = newPageTable(vm.phyMem, root);
+		}
+	};
+	virtMemory.prototype.SetTable = function(root) { return this.$val.SetTable(root); };
+	virtMemory.Ptr.prototype.transRead = function(addr, ring) {
+		var vm;
+		vm = this;
+		if (vm.ptable === ($ptrType(pageTable)).nil) {
+			return [addr, ($ptrType(Excep)).nil];
+		}
+		return vm.ptable.TranslateRead(addr, ring);
+	};
+	virtMemory.prototype.transRead = function(addr, ring) { return this.$val.transRead(addr, ring); };
+	virtMemory.Ptr.prototype.transWrite = function(addr, ring) {
+		var vm;
+		vm = this;
+		if (vm.ptable === ($ptrType(pageTable)).nil) {
+			return [addr, ($ptrType(Excep)).nil];
+		}
+		return vm.ptable.TranslateWrite(addr, ring);
+	};
+	virtMemory.prototype.transWrite = function(addr, ring) { return this.$val.transWrite(addr, ring); };
+	virtMemory.Ptr.prototype.ReadWord = function(addr, ring) {
+		var vm, _tuple, e;
+		vm = this;
+		_tuple = vm.transRead(addr, ring); addr = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		return vm.phyMem.ReadWord(addr);
+	};
+	virtMemory.prototype.ReadWord = function(addr, ring) { return this.$val.ReadWord(addr, ring); };
+	virtMemory.Ptr.prototype.WriteWord = function(addr, ring, v) {
+		var vm, _tuple, e;
+		vm = this;
+		_tuple = vm.transWrite(addr, ring); addr = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		return vm.phyMem.WriteWord(addr, v);
+	};
+	virtMemory.prototype.WriteWord = function(addr, ring, v) { return this.$val.WriteWord(addr, ring, v); };
+	virtMemory.Ptr.prototype.ReadByte = function(addr, ring) {
+		var vm, _tuple, e;
+		vm = this;
+		_tuple = vm.transRead(addr, ring); addr = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return [0, e];
+		}
+		return vm.phyMem.ReadByte(addr);
+	};
+	virtMemory.prototype.ReadByte = function(addr, ring) { return this.$val.ReadByte(addr, ring); };
+	virtMemory.Ptr.prototype.WriteByte = function(addr, ring, v) {
+		var vm, _tuple, e;
+		vm = this;
+		_tuple = vm.transWrite(addr, ring); addr = _tuple[0]; e = _tuple[1];
+		if (!(e === ($ptrType(Excep)).nil)) {
+			return e;
+		}
+		return vm.phyMem.WriteByte(addr, v);
+	};
+	virtMemory.prototype.WriteByte = function(addr, ring, v) { return this.$val.WriteByte(addr, ring, v); };
 	$pkg.$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $r, $s = 0; var $f = function() { while (true) { switch ($s) { case 0:
@@ -16874,15 +18006,48 @@ $packages["lonnie.io/e8vm/arch8"] = (function() {
 		$r = time.$init($BLOCKING); /* */ $s = 10; case 10: if ($r && $r.$blocking) { $r = $r(); }
 		($ptrType(console)).methods = [["Tick", "Tick", "", $funcType([], [], false), -1], ["interrupt", "interrupt", "lonnie.io/e8vm/arch8", $funcType([$Uint8], [], false), -1]];
 		console.init([["intBus", "intBus", "lonnie.io/e8vm/arch8", intBus, ""], ["p", "p", "lonnie.io/e8vm/arch8", ($ptrType(page)), ""], ["Core", "Core", "", $Uint8, ""], ["IntIn", "IntIn", "", $Uint8, ""], ["IntOut", "IntOut", "", $Uint8, ""], ["Output", "Output", "", io.Writer, ""]]);
+		inst.init([["I", "I", "", $funcType([($ptrType(cpu)), $Uint32], [($ptrType(Excep))], false)]]);
+		($ptrType(cpu)).methods = [["Ienter", "Ienter", "", $funcType([$Uint8, $Uint32], [($ptrType(Excep))], false), -1], ["Interrupt", "Interrupt", "", $funcType([$Uint8], [], false), -1], ["Iret", "Iret", "", $funcType([], [($ptrType(Excep))], false), -1], ["Reset", "Reset", "", $funcType([], [], false), -1], ["Syscall", "Syscall", "", $funcType([], [($ptrType(Excep))], false), -1], ["Tick", "Tick", "", $funcType([], [($ptrType(Excep))], false), -1], ["UserMode", "UserMode", "", $funcType([], [$Bool], false), -1], ["readByte", "readByte", "lonnie.io/e8vm/arch8", $funcType([$Uint32], [$Uint8, ($ptrType(Excep))], false), -1], ["readWord", "readWord", "lonnie.io/e8vm/arch8", $funcType([$Uint32], [$Uint32, ($ptrType(Excep))], false), -1], ["tick", "tick", "lonnie.io/e8vm/arch8", $funcType([], [($ptrType(Excep))], false), -1], ["writeByte", "writeByte", "lonnie.io/e8vm/arch8", $funcType([$Uint32, $Uint8], [($ptrType(Excep))], false), -1], ["writeWord", "writeWord", "lonnie.io/e8vm/arch8", $funcType([$Uint32, $Uint32], [($ptrType(Excep))], false), -1]];
+		cpu.init([["regs", "regs", "lonnie.io/e8vm/arch8", ($sliceType($Uint32)), ""], ["ring", "ring", "lonnie.io/e8vm/arch8", $Uint8, ""], ["phyMem", "phyMem", "lonnie.io/e8vm/arch8", ($ptrType(phyMemory)), ""], ["virtMem", "virtMem", "lonnie.io/e8vm/arch8", ($ptrType(virtMemory)), ""], ["interrupt", "interrupt", "lonnie.io/e8vm/arch8", ($ptrType(interrupt)), ""], ["inst", "inst", "lonnie.io/e8vm/arch8", inst, ""], ["index", "index", "lonnie.io/e8vm/arch8", $Uint8, ""]]);
+		device.init([["Tick", "Tick", "", $funcType([], [], false)]]);
 		($ptrType(Excep)).methods = [["Error", "Error", "", $funcType([], [$String], false), -1]];
 		Excep.init([["Code", "Code", "", $Uint8, ""], ["Arg", "Arg", "", $Uint32, ""], ["Err", "Err", "", $error, ""]]);
+		($ptrType(instArch8)).methods = [["I", "I", "", $funcType([($ptrType(cpu)), $Uint32], [($ptrType(Excep))], false), -1]];
+		instArch8.init([["reg", "reg", "lonnie.io/e8vm/arch8", instReg, ""], ["imm", "imm", "lonnie.io/e8vm/arch8", instImm, ""], ["br", "br", "lonnie.io/e8vm/arch8", instBr, ""], ["sys", "sys", "lonnie.io/e8vm/arch8", instSys, ""], ["jmp", "jmp", "lonnie.io/e8vm/arch8", instJmp, ""]]);
+		($ptrType(instBr)).methods = [["I", "I", "", $funcType([($ptrType(cpu)), $Uint32], [($ptrType(Excep))], false), -1]];
+		instBr.init([]);
+		($ptrType(instImm)).methods = [["I", "I", "", $funcType([($ptrType(cpu)), $Uint32], [($ptrType(Excep))], false), -1]];
+		instImm.init([]);
+		($ptrType(instJmp)).methods = [["I", "I", "", $funcType([($ptrType(cpu)), $Uint32], [($ptrType(Excep))], false), -1]];
+		instJmp.init([]);
+		($ptrType(instReg)).methods = [["I", "I", "", $funcType([($ptrType(cpu)), $Uint32], [($ptrType(Excep))], false), -1]];
+		instReg.init([]);
+		($ptrType(instSys)).methods = [["I", "I", "", $funcType([($ptrType(cpu)), $Uint32], [($ptrType(Excep))], false), -1]];
+		instSys.init([]);
 		intBus.init([["Interrupt", "Interrupt", "", $funcType([$Uint8, $Uint8], [], false)], ["Ncore", "Ncore", "", $funcType([], [$Uint8], false)]]);
 		($ptrType(interrupt)).methods = [["Clear", "Clear", "", $funcType([$Uint8], [], false), -1], ["Disable", "Disable", "", $funcType([], [], false), -1], ["DisableInt", "DisableInt", "", $funcType([$Uint8], [], false), -1], ["Enable", "Enable", "", $funcType([], [], false), -1], ["EnableInt", "EnableInt", "", $funcType([$Uint8], [], false), -1], ["Enabled", "Enabled", "", $funcType([], [$Bool], false), -1], ["Flags", "Flags", "", $funcType([], [$Uint8], false), -1], ["Issue", "Issue", "", $funcType([$Uint8], [], false), -1], ["Poll", "Poll", "", $funcType([], [$Bool, $Uint8], false), -1], ["handlerPC", "handlerPC", "lonnie.io/e8vm/arch8", $funcType([], [$Uint32], false), -1], ["kernelSP", "kernelSP", "lonnie.io/e8vm/arch8", $funcType([], [$Uint32], false), -1], ["readByte", "readByte", "lonnie.io/e8vm/arch8", $funcType([$Uint32], [$Uint8], false), -1], ["readWord", "readWord", "lonnie.io/e8vm/arch8", $funcType([$Uint32], [$Uint32], false), -1], ["syscallPC", "syscallPC", "lonnie.io/e8vm/arch8", $funcType([], [$Uint32], false), -1], ["writeByte", "writeByte", "lonnie.io/e8vm/arch8", $funcType([$Uint32, $Uint8], [], false), -1], ["writeWord", "writeWord", "lonnie.io/e8vm/arch8", $funcType([$Uint32, $Uint32], [], false), -1]];
 		interrupt.init([["p", "p", "lonnie.io/e8vm/arch8", ($ptrType(page)), ""], ["base", "base", "lonnie.io/e8vm/arch8", $Uint32, ""]]);
+		($ptrType(Machine)).methods = [["LoadImage", "LoadImage", "", $funcType([io.Reader, $Uint32], [$error], false), -1], ["PrintCoreStatus", "PrintCoreStatus", "", $funcType([], [], false), -1], ["Run", "Run", "", $funcType([$Int], [$Int, ($ptrType(CoreExcep))], false), -1], ["SetOutput", "SetOutput", "", $funcType([io.Writer], [], false), -1], ["Tick", "Tick", "", $funcType([], [($ptrType(CoreExcep))], false), -1], ["addDevice", "addDevice", "lonnie.io/e8vm/arch8", $funcType([device], [], false), -1]];
+		Machine.init([["phyMem", "phyMem", "lonnie.io/e8vm/arch8", ($ptrType(phyMemory)), ""], ["inst", "inst", "lonnie.io/e8vm/arch8", inst, ""], ["cores", "cores", "lonnie.io/e8vm/arch8", ($ptrType(multiCore)), ""], ["serial", "serial", "lonnie.io/e8vm/arch8", ($ptrType(serial)), ""], ["console", "console", "lonnie.io/e8vm/arch8", ($ptrType(console)), ""], ["devices", "devices", "lonnie.io/e8vm/arch8", ($sliceType(device)), ""]]);
+		($ptrType(multiCore)).methods = [["Interrupt", "Interrupt", "", $funcType([$Uint8, $Uint8], [], false), -1], ["Ncore", "Ncore", "", $funcType([], [$Uint8], false), -1], ["PrintStatus", "PrintStatus", "", $funcType([], [], false), -1], ["Tick", "Tick", "", $funcType([], [($ptrType(CoreExcep))], false), -1]];
+		multiCore.init([["cores", "cores", "lonnie.io/e8vm/arch8", ($sliceType(($ptrType(cpu)))), ""], ["phyMem", "phyMem", "lonnie.io/e8vm/arch8", ($ptrType(phyMemory)), ""]]);
+		CoreExcep.methods = [["Error", "Error", "", $funcType([], [$String], false), 1]];
+		($ptrType(CoreExcep)).methods = [["Error", "Error", "", $funcType([], [$String], false), 1]];
+		CoreExcep.init([["Core", "Core", "", $Int, ""], ["Excep", "", "", ($ptrType(Excep)), ""]]);
 		($ptrType(page)).methods = [["ReadByte", "ReadByte", "", $funcType([$Uint32], [$Uint8], false), -1], ["ReadWord", "ReadWord", "", $funcType([$Uint32], [$Uint32], false), -1], ["WriteByte", "WriteByte", "", $funcType([$Uint32, $Uint8], [], false), -1], ["WriteWord", "WriteWord", "", $funcType([$Uint32, $Uint32], [], false), -1]];
 		page.init([["Bytes", "Bytes", "", ($sliceType($Uint8)), ""]]);
+		($ptrType(pageTable)).methods = [["Translate", "Translate", "", $funcType([$Uint32, $Uint8], [$Uint32, ($ptrType(Excep))], false), -1], ["TranslateRead", "TranslateRead", "", $funcType([$Uint32, $Uint8], [$Uint32, ($ptrType(Excep))], false), -1], ["TranslateWrite", "TranslateWrite", "", $funcType([$Uint32, $Uint8], [$Uint32, ($ptrType(Excep))], false), -1], ["updatePte", "updatePte", "lonnie.io/e8vm/arch8", $funcType([], [($ptrType(Excep))], false), -1]];
+		pageTable.init([["mem", "mem", "lonnie.io/e8vm/arch8", ($ptrType(phyMemory)), ""], ["root", "root", "lonnie.io/e8vm/arch8", $Uint32, ""], ["pte1", "pte1", "lonnie.io/e8vm/arch8", ptEntry, ""], ["pte2", "pte2", "lonnie.io/e8vm/arch8", ptEntry, ""], ["pte1Addr", "pte1Addr", "lonnie.io/e8vm/arch8", $Uint32, ""], ["pte2Addr", "pte2Addr", "lonnie.io/e8vm/arch8", $Uint32, ""]]);
+		ptEntry.methods = [["pn", "pn", "lonnie.io/e8vm/arch8", $funcType([], [$Uint32], false), -1], ["test", "test", "lonnie.io/e8vm/arch8", $funcType([$Uint32, $Uint8], [($ptrType(Excep))], false), -1], ["testBit", "testBit", "lonnie.io/e8vm/arch8", $funcType([$Uint], [$Bool], false), -1]];
+		($ptrType(ptEntry)).methods = [["pn", "pn", "lonnie.io/e8vm/arch8", $funcType([], [$Uint32], false), -1], ["setBit", "setBit", "lonnie.io/e8vm/arch8", $funcType([$Uint], [], false), -1], ["test", "test", "lonnie.io/e8vm/arch8", $funcType([$Uint32, $Uint8], [($ptrType(Excep))], false), -1], ["testBit", "testBit", "lonnie.io/e8vm/arch8", $funcType([$Uint], [$Bool], false), -1]];
+		($ptrType(phyMemory)).methods = [["Page", "Page", "", $funcType([$Uint32], [($ptrType(page))], false), -1], ["ReadByte", "ReadByte", "", $funcType([$Uint32], [$Uint8, ($ptrType(Excep))], false), -1], ["ReadWord", "ReadWord", "", $funcType([$Uint32], [$Uint32, ($ptrType(Excep))], false), -1], ["Size", "Size", "", $funcType([], [$Uint32], false), -1], ["WriteByte", "WriteByte", "", $funcType([$Uint32, $Uint8], [($ptrType(Excep))], false), -1], ["WriteWord", "WriteWord", "", $funcType([$Uint32, $Uint32], [($ptrType(Excep))], false), -1], ["pageForByte", "pageForByte", "lonnie.io/e8vm/arch8", $funcType([$Uint32], [($ptrType(page)), ($ptrType(Excep))], false), -1], ["pageForWord", "pageForWord", "lonnie.io/e8vm/arch8", $funcType([$Uint32], [($ptrType(page)), ($ptrType(Excep))], false), -1]];
+		phyMemory.init([["npage", "npage", "lonnie.io/e8vm/arch8", $Uint32, ""], ["pages", "pages", "lonnie.io/e8vm/arch8", ($mapType($Uint32, ($ptrType(page)))), ""]]);
 		($ptrType(serial)).methods = [["InLen", "InLen", "", $funcType([], [$Uint32], false), -1], ["OutLen", "OutLen", "", $funcType([], [$Uint32], false), -1], ["ReadByte", "ReadByte", "", $funcType([], [$Uint8, $Bool], false), -1], ["Tick", "Tick", "", $funcType([], [], false), -1], ["WriteByte", "WriteByte", "", $funcType([$Uint8], [$Bool], false), -1], ["countDown", "countDown", "lonnie.io/e8vm/arch8", $funcType([], [], false), -1], ["flush", "flush", "lonnie.io/e8vm/arch8", $funcType([], [], false), -1], ["interrupt", "interrupt", "lonnie.io/e8vm/arch8", $funcType([$Uint8], [], false), -1]];
 		serial.init([["intBus", "intBus", "lonnie.io/e8vm/arch8", intBus, ""], ["p", "p", "lonnie.io/e8vm/arch8", ($ptrType(page)), ""], ["Core", "Core", "", $Uint8, ""], ["IntIn", "IntIn", "", $Uint8, ""], ["IntOut", "IntOut", "", $Uint8, ""], ["Output", "Output", "", io.Writer, ""]]);
+		($ptrType(ticker)).methods = [["Tick", "Tick", "", $funcType([], [], false), -1], ["reset", "reset", "lonnie.io/e8vm/arch8", $funcType([], [], false), -1]];
+		ticker.init([["intBus", "intBus", "lonnie.io/e8vm/arch8", intBus, ""], ["nextTick", "nextTick", "lonnie.io/e8vm/arch8", $Int32, ""], ["Interval", "Interval", "", $Int32, ""], ["Noise", "Noise", "", $Int32, ""], ["Rand", "Rand", "", ($ptrType(rand.Rand)), ""], ["Code", "Code", "", $Uint8, ""]]);
+		($ptrType(virtMemory)).methods = [["ReadByte", "ReadByte", "", $funcType([$Uint32, $Uint8], [$Uint8, ($ptrType(Excep))], false), -1], ["ReadWord", "ReadWord", "", $funcType([$Uint32, $Uint8], [$Uint32, ($ptrType(Excep))], false), -1], ["SetTable", "SetTable", "", $funcType([$Uint32], [], false), -1], ["WriteByte", "WriteByte", "", $funcType([$Uint32, $Uint8, $Uint8], [($ptrType(Excep))], false), -1], ["WriteWord", "WriteWord", "", $funcType([$Uint32, $Uint8, $Uint32], [($ptrType(Excep))], false), -1], ["transRead", "transRead", "lonnie.io/e8vm/arch8", $funcType([$Uint32, $Uint8], [$Uint32, ($ptrType(Excep))], false), -1], ["transWrite", "transWrite", "lonnie.io/e8vm/arch8", $funcType([$Uint32, $Uint8], [$Uint32, ($ptrType(Excep))], false), -1]];
+		virtMemory.init([["phyMem", "phyMem", "lonnie.io/e8vm/arch8", ($ptrType(phyMemory)), ""], ["ptable", "ptable", "lonnie.io/e8vm/arch8", ($ptrType(pageTable)), ""]]);
 		new console.Ptr();
 		errHalt = newExcep(1, "halt");
 		errTimeInt = newExcep(2, "time interrupt");
@@ -20304,17 +21469,18 @@ $packages["lonnie.io/e8vm/dasm8"] = (function() {
 	return $pkg;
 })();
 $packages["/home/h8liu/asmplay/e8vm"] = (function() {
-	var $pkg = {}, bytes = $packages["bytes"], fmt = $packages["fmt"], template = $packages["html/template"], strings = $packages["strings"], ioutil = $packages["io/ioutil"], js = $packages["github.com/gopherjs/gopherjs/js"], arch8 = $packages["lonnie.io/e8vm/arch8"], asm8 = $packages["lonnie.io/e8vm/asm8"], dasm8 = $packages["lonnie.io/e8vm/dasm8"], lex8 = $packages["lonnie.io/e8vm/lex8"], main, compile, buildBareFunc, _compile;
+	var $pkg = {}, bytes = $packages["bytes"], fmt = $packages["fmt"], template = $packages["html/template"], strings = $packages["strings"], ioutil = $packages["io/ioutil"], io = $packages["io"], js = $packages["github.com/gopherjs/gopherjs/js"], arch8 = $packages["lonnie.io/e8vm/arch8"], asm8 = $packages["lonnie.io/e8vm/asm8"], dasm8 = $packages["lonnie.io/e8vm/dasm8"], lex8 = $packages["lonnie.io/e8vm/lex8"], main, compile, buildBareFunc, run, _compile;
 	main = function() {
 		var _map, _key;
 		$global.e8vm = $externalize((_map = new $Map(), _key = "compile", _map[_key] = { k: _key, v: new ($funcType([$String, $String], [($mapType($String, $emptyInterface))], false))(compile) }, _map), ($mapType($String, $emptyInterface)));
 	};
 	compile = function(file, code) {
-		var ret, _tuple, dump, errs, _key, _key$1;
+		var ret, _tuple, dump, errs, out, _key, _key$1, _key$2;
 		ret = new $Map();
-		_tuple = _compile(file, code); dump = _tuple[0]; errs = _tuple[1];
+		_tuple = _compile(file, code); dump = _tuple[0]; errs = _tuple[1]; out = _tuple[2];
 		_key = "dasm"; (ret || $throwRuntimeError("assignment to entry in nil map"))[_key] = { k: _key, v: new $String(dump) };
 		_key$1 = "errs"; (ret || $throwRuntimeError("assignment to entry in nil map"))[_key$1] = { k: _key$1, v: new $String(errs) };
+		_key$2 = "out"; (ret || $throwRuntimeError("assignment to entry in nil map"))[_key$2] = { k: _key$2, v: new $String(out) };
 		return ret;
 	};
 	buildBareFunc = function(file, code) {
@@ -20322,10 +21488,26 @@ $packages["/home/h8liu/asmplay/e8vm"] = (function() {
 		rc = ioutil.NopCloser(strings.NewReader(code));
 		return asm8.BuildSingleFile(file, rc);
 	};
+	run = function(bs, out) {
+		var r, m, e, _tuple, ret, exp;
+		r = bytes.NewBuffer(bs);
+		m = arch8.NewMachine(1073741824, 1);
+		e = m.LoadImage(r, 32768);
+		if (!($interfaceIsEqual(e, $ifaceNil))) {
+			return [0, e];
+		}
+		m.SetOutput(out);
+		_tuple = m.Run(100000); ret = _tuple[0]; exp = _tuple[1];
+		if (exp === ($ptrType(arch8.CoreExcep)).nil) {
+			return [ret, $ifaceNil];
+		}
+		return [ret, exp];
+	};
 	_compile = function(file, code) {
-		var dump = "", errs = "", out, errOut, _tuple, bs, es, _ref, _i, e, _tmp, _tmp$1, lines, _ref$1, _i$1, line, _tmp$2, _tmp$3;
-		out = new bytes.Buffer.Ptr();
+		var dump = "", errs = "", out = "", dasm, errOut, output, _tuple, bs, es, _ref, _i, e, _tmp, _tmp$1, _tmp$2, lines, _ref$1, _i$1, line, _tuple$1, ncycle, e$1, _tmp$3, _tmp$4, _tmp$5;
+		dasm = new bytes.Buffer.Ptr();
 		errOut = new bytes.Buffer.Ptr();
+		output = new bytes.Buffer.Ptr();
 		_tuple = buildBareFunc(file, code); bs = _tuple[0]; es = _tuple[1];
 		if (es.$length > 0) {
 			_ref = es;
@@ -20335,19 +21517,24 @@ $packages["/home/h8liu/asmplay/e8vm"] = (function() {
 				fmt.Fprintf(errOut, "<div class=\"error\">%s</div>\n", new ($sliceType($emptyInterface))([new $String(template.HTMLEscapeString(e.Error()))]));
 				_i++;
 			}
-			_tmp = ""; _tmp$1 = errOut.String(); dump = _tmp; errs = _tmp$1;
-			return [dump, errs];
+			_tmp = ""; _tmp$1 = errOut.String(); _tmp$2 = ""; dump = _tmp; errs = _tmp$1; out = _tmp$2;
+			return [dump, errs, out];
 		}
 		lines = dasm8.Dasm(bs, 32768);
 		_ref$1 = lines;
 		_i$1 = 0;
 		while (_i$1 < _ref$1.$length) {
 			line = ((_i$1 < 0 || _i$1 >= _ref$1.$length) ? $throwRuntimeError("index out of range") : _ref$1.$array[_ref$1.$offset + _i$1]);
-			fmt.Fprintf(out, "%s\n", new ($sliceType($emptyInterface))([new $String(template.HTMLEscapeString(line.String()))]));
+			fmt.Fprintf(dasm, "%s\n", new ($sliceType($emptyInterface))([new $String(template.HTMLEscapeString(line.String()))]));
 			_i$1++;
 		}
-		_tmp$2 = out.String(); _tmp$3 = ""; dump = _tmp$2; errs = _tmp$3;
-		return [dump, errs];
+		_tuple$1 = run(bs, output); ncycle = _tuple$1[0]; e$1 = _tuple$1[1];
+		fmt.Fprintf(output, "(%d cycles)\n", new ($sliceType($emptyInterface))([new $Int(ncycle)]));
+		if (!($interfaceIsEqual(e$1, $ifaceNil))) {
+			fmt.Fprintln(output, new ($sliceType($emptyInterface))([e$1]));
+		}
+		_tmp$3 = dasm.String(); _tmp$4 = ""; _tmp$5 = output.String(); dump = _tmp$3; errs = _tmp$4; out = _tmp$5;
+		return [dump, errs, out];
 	};
 	$pkg.$init = function() {
 		$pkg.$init = function() {};
@@ -20356,12 +21543,13 @@ $packages["/home/h8liu/asmplay/e8vm"] = (function() {
 		$r = fmt.$init($BLOCKING); /* */ $s = 2; case 2: if ($r && $r.$blocking) { $r = $r(); }
 		$r = js.$init($BLOCKING); /* */ $s = 3; case 3: if ($r && $r.$blocking) { $r = $r(); }
 		$r = template.$init($BLOCKING); /* */ $s = 4; case 4: if ($r && $r.$blocking) { $r = $r(); }
-		$r = ioutil.$init($BLOCKING); /* */ $s = 5; case 5: if ($r && $r.$blocking) { $r = $r(); }
-		$r = arch8.$init($BLOCKING); /* */ $s = 6; case 6: if ($r && $r.$blocking) { $r = $r(); }
-		$r = asm8.$init($BLOCKING); /* */ $s = 7; case 7: if ($r && $r.$blocking) { $r = $r(); }
-		$r = dasm8.$init($BLOCKING); /* */ $s = 8; case 8: if ($r && $r.$blocking) { $r = $r(); }
-		$r = lex8.$init($BLOCKING); /* */ $s = 9; case 9: if ($r && $r.$blocking) { $r = $r(); }
-		$r = strings.$init($BLOCKING); /* */ $s = 10; case 10: if ($r && $r.$blocking) { $r = $r(); }
+		$r = io.$init($BLOCKING); /* */ $s = 5; case 5: if ($r && $r.$blocking) { $r = $r(); }
+		$r = ioutil.$init($BLOCKING); /* */ $s = 6; case 6: if ($r && $r.$blocking) { $r = $r(); }
+		$r = arch8.$init($BLOCKING); /* */ $s = 7; case 7: if ($r && $r.$blocking) { $r = $r(); }
+		$r = asm8.$init($BLOCKING); /* */ $s = 8; case 8: if ($r && $r.$blocking) { $r = $r(); }
+		$r = dasm8.$init($BLOCKING); /* */ $s = 9; case 9: if ($r && $r.$blocking) { $r = $r(); }
+		$r = lex8.$init($BLOCKING); /* */ $s = 10; case 10: if ($r && $r.$blocking) { $r = $r(); }
+		$r = strings.$init($BLOCKING); /* */ $s = 11; case 11: if ($r && $r.$blocking) { $r = $r(); }
 		main();
 		/* */ } return; } }; $f.$blocking = true; return $f;
 	};
