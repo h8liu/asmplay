@@ -19503,7 +19503,7 @@ $packages["lonnie.io/e8vm/link8"] = (function() {
 	return $pkg;
 })();
 $packages["lonnie.io/e8vm/asm8"] = (function() {
-	var $pkg = {}, io = $packages["io"], lex8 = $packages["lonnie.io/e8vm/lex8"], link8 = $packages["lonnie.io/e8vm/link8"], bytes = $packages["bytes"], strconv = $packages["strconv"], arch8 = $packages["lonnie.io/e8vm/arch8"], unicode = $packages["unicode"], strings = $packages["strings"], builder, file, funcDecl, funcStmt, inst, lib, pkg, instParse, instParsers, parser, stmtLexer, symScope, symTabel, symbol, varDecl, varStmt, insts, opBrMap, opImsMap, opMemMap, opImuMap, opImmMap, opShiftMap, opReg3Map, opReg2Map, opFloatMap, opSysMap, opSys1Map, regNameMap, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, _map$11, _key$11, _map$12, _key$12, buildFile, buildFunc, declareLabels, setOffsets, fillDelta, fillLabels, queryPkg, init, resolveSymbol, linkSymbol, makeFuncObj, buildPkgScope, buildLib, varSize, varAlign, buildVar, newBuilder, checkAllType, parseDataHex, nbitAlign, parseDataInts, parseDataStr, isJump, inBrRange, parseInst, makeInstBr, parseInstBr, parseImu, parseIms, parseImm, makeInstImm, parseInstImm, parseInstJmp, parseShift, makeInstReg, parseInstReg, makeInstSys, parseInstSys, lexAsm8, newLexer, lexComment, lexLineComment, lexBlockComment, isOperandChar, isKeyword, lexOperand, digitVal, lexEscape, lexString, newLib, newPkg, argCount, parseFile, parseFuncStmts, parseFunc, parseOps, parseFuncStmt, isLabelStart, isLabel, parseLabel, parseReg, isSymbol, isIdent, isPackName, parseSym, parseVarStmts, parseVar, parseArgs, parseData, parseVarStmt, newParser, typeStr, BuildSingleFile, newStmtLexer, newSymScope, newSymTable, symStr, isPublic;
+	var $pkg = {}, io = $packages["io"], lex8 = $packages["lonnie.io/e8vm/lex8"], link8 = $packages["lonnie.io/e8vm/link8"], bytes = $packages["bytes"], strconv = $packages["strconv"], math = $packages["math"], arch8 = $packages["lonnie.io/e8vm/arch8"], unicode = $packages["unicode"], strings = $packages["strings"], builder, file, funcDecl, funcStmt, inst, lib, pkg, instParse, instParsers, parser, stmtLexer, symScope, symTabel, symbol, varDecl, varStmt, insts, opBrMap, opImsMap, opMemMap, opImuMap, opImmMap, opShiftMap, opReg3Map, opReg2Map, opFloatMap, opSysMap, opSys1Map, regNameMap, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, _map$11, _key$11, _map$12, _key$12, buildFile, buildFunc, declareLabels, setOffsets, fillDelta, fillLabels, queryPkg, init, resolveSymbol, linkSymbol, makeFuncObj, buildPkgScope, buildLib, varSize, varAlign, buildVar, newBuilder, checkAllType, parseDataHex, nbitAlign, parseDataNums, parseDataStr, isJump, inBrRange, parseInst, makeInstBr, parseInstBr, parseImu, parseIms, parseImm, makeInstImm, parseInstImm, parseInstJmp, parseShift, makeInstReg, parseInstReg, makeInstSys, parseInstSys, lexAsm8, newLexer, lexComment, lexLineComment, lexBlockComment, isOperandChar, isKeyword, lexOperand, digitVal, lexEscape, lexString, newLib, newPkg, argCount, parseFile, parseFuncStmts, parseFunc, parseOps, parseFuncStmt, isLabelStart, isLabel, parseLabel, parseReg, isSymbol, isIdent, isPackName, parseSym, parseVarStmts, parseVar, parseArgs, parseData, parseVarStmt, newParser, typeStr, BuildSingleFile, newStmtLexer, newSymScope, newSymTable, symStr, isPublic;
 	builder = $pkg.builder = $newType(0, $kindStruct, "asm8.builder", "builder", "lonnie.io/e8vm/asm8", function(errs_, scope_, curPkg_, hasError_) {
 		this.$val = this;
 		this.errs = errs_ !== undefined ? errs_ : ($ptrType(lex8.ErrorList)).nil;
@@ -20018,14 +20018,14 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 			$panic(new $String("invalid nbit"));
 		}
 	};
-	parseDataInts = function(p, args, mode) {
-		var i, nbit, e, buf, _ref, _i, arg, _tuple, ui, _tuple$1, bs;
+	parseDataNums = function(p, args, mode) {
+		var ui, nbit, e, buf, _ref, _i, arg, f, _tuple, i, _tuple$1, ui64, _tuple$2, bs;
 		if (!checkAllType(p, args, 2)) {
 			return [($sliceType($Uint8)).nil, 0];
 		}
-		i = new $Int64(0, 0);
+		ui = 0;
 		nbit = 8;
-		if (!(((mode & 1) === 0))) {
+		if (!(((mode & 2) === 0))) {
 			nbit = 32;
 		}
 		e = $ifaceNil;
@@ -20034,22 +20034,28 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		_i = 0;
 		while (_i < _ref.$length) {
 			arg = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			if (!(((mode & 2) === 0))) {
-				_tuple = strconv.ParseInt(arg.Lit, 0, nbit); i = _tuple[0]; e = _tuple[1];
+			if (!(((mode & 4) === 0))) {
+				f = 0;
+				_tuple = strconv.ParseFloat(arg.Lit, 32); f = _tuple[0]; e = _tuple[1];
+				ui = math.Float32bits(f);
+			} else if (!(((mode & 1) === 0))) {
+				i = new $Int64(0, 0);
+				_tuple$1 = strconv.ParseInt(arg.Lit, 0, nbit); i = _tuple$1[0]; e = _tuple$1[1];
+				ui = (i.$low >>> 0);
 			} else {
-				ui = new $Uint64(0, 0);
-				_tuple$1 = strconv.ParseUint(arg.Lit, 0, nbit); ui = _tuple$1[0]; e = _tuple$1[1];
-				i = new $Int64(ui.$high, ui.$low);
+				ui64 = new $Uint64(0, 0);
+				_tuple$2 = strconv.ParseUint(arg.Lit, 0, nbit); ui64 = _tuple$2[0]; e = _tuple$2[1];
+				ui = (ui64.$low >>> 0);
 			}
 			if (!($interfaceIsEqual(e, $ifaceNil))) {
 				p.err(arg.Pos, "%s", new ($sliceType($emptyInterface))([e]));
 				return [($sliceType($Uint8)).nil, 0];
 			}
 			if (nbit === 8) {
-				buf.WriteByte((i.$low << 24 >>> 24));
+				buf.WriteByte((ui << 24 >>> 24));
 			} else if (nbit === 32) {
 				bs = ($arrayType($Uint8, 4)).zero(); $copy(bs, ($arrayType($Uint8, 4)).zero(), ($arrayType($Uint8, 4)));
-				arch8.Endian.PutUint32(new ($sliceType($Uint8))(bs), (i.$low >>> 0));
+				arch8.Endian.PutUint32(new ($sliceType($Uint8))(bs), ui);
 				buf.Write(new ($sliceType($Uint8))(bs));
 			}
 			_i++;
@@ -21021,16 +21027,15 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		} else if (_ref === "x") {
 			return parseDataHex(p, args);
 		} else if (_ref === "u32") {
-			return parseDataInts(p, args, 1);
+			return parseDataNums(p, args, 2);
 		} else if (_ref === "i32") {
-			return parseDataInts(p, args, 3);
+			return parseDataNums(p, args, 3);
 		} else if (_ref === "u8" || _ref === "byte") {
-			return parseDataInts(p, args, 0);
+			return parseDataNums(p, args, 0);
 		} else if (_ref === "i8") {
-			return parseDataInts(p, args, 2);
+			return parseDataNums(p, args, 1);
 		} else if (_ref === "f32") {
-			p.err(t.Pos, "data type %s not implemented", new ($sliceType($emptyInterface))([new $String(t.Lit)]));
-			return [($sliceType($Uint8)).nil, 0];
+			return parseDataNums(p, args, 6);
 		} else {
 			p.err(t.Pos, "unknown data type %q", new ($sliceType($emptyInterface))([new $String(t.Lit)]));
 			return [($sliceType($Uint8)).nil, 0];
@@ -21394,9 +21399,10 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		$r = arch8.$init($BLOCKING); /* */ $s = 3; case 3: if ($r && $r.$blocking) { $r = $r(); }
 		$r = lex8.$init($BLOCKING); /* */ $s = 4; case 4: if ($r && $r.$blocking) { $r = $r(); }
 		$r = link8.$init($BLOCKING); /* */ $s = 5; case 5: if ($r && $r.$blocking) { $r = $r(); }
-		$r = strconv.$init($BLOCKING); /* */ $s = 6; case 6: if ($r && $r.$blocking) { $r = $r(); }
-		$r = strings.$init($BLOCKING); /* */ $s = 7; case 7: if ($r && $r.$blocking) { $r = $r(); }
-		$r = unicode.$init($BLOCKING); /* */ $s = 8; case 8: if ($r && $r.$blocking) { $r = $r(); }
+		$r = math.$init($BLOCKING); /* */ $s = 6; case 6: if ($r && $r.$blocking) { $r = $r(); }
+		$r = strconv.$init($BLOCKING); /* */ $s = 7; case 7: if ($r && $r.$blocking) { $r = $r(); }
+		$r = strings.$init($BLOCKING); /* */ $s = 8; case 8: if ($r && $r.$blocking) { $r = $r(); }
+		$r = unicode.$init($BLOCKING); /* */ $s = 9; case 9: if ($r && $r.$blocking) { $r = $r(); }
 		($ptrType(builder)).methods = [["Errs", "Errs", "", $funcType([], [($sliceType(($ptrType(lex8.Error))))], false), -1], ["clearErr", "clearErr", "lonnie.io/e8vm/asm8", $funcType([], [], false), -1], ["err", "err", "lonnie.io/e8vm/asm8", $funcType([($ptrType(lex8.Pos)), $String, ($sliceType($emptyInterface))], [], true), -1]];
 		builder.init([["errs", "errs", "lonnie.io/e8vm/asm8", ($ptrType(lex8.ErrorList)), ""], ["scope", "scope", "lonnie.io/e8vm/asm8", ($ptrType(symScope)), ""], ["curPkg", "curPkg", "lonnie.io/e8vm/asm8", ($ptrType(lib)), ""], ["hasError", "hasError", "lonnie.io/e8vm/asm8", $Bool, ""]]);
 		file.init([["Funcs", "Funcs", "", ($sliceType(($ptrType(funcDecl)))), ""], ["Vars", "Vars", "", ($sliceType(($ptrType(varDecl)))), ""]]);
