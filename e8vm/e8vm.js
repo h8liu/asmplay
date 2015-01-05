@@ -19503,7 +19503,7 @@ $packages["lonnie.io/e8vm/link8"] = (function() {
 	return $pkg;
 })();
 $packages["lonnie.io/e8vm/asm8"] = (function() {
-	var $pkg = {}, io = $packages["io"], lex8 = $packages["lonnie.io/e8vm/lex8"], link8 = $packages["lonnie.io/e8vm/link8"], bytes = $packages["bytes"], strconv = $packages["strconv"], unicode = $packages["unicode"], strings = $packages["strings"], builder, file, funcDecl, funcStmt, inst, lib, pkg, instParse, instParsers, parser, stmtLexer, symScope, symTabel, symbol, varDecl, varStmt, insts, opBrMap, opImsMap, opMemMap, opImuMap, opImmMap, opShiftMap, opReg3Map, opReg2Map, opFloatMap, opSysMap, opSys1Map, regNameMap, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, _map$11, _key$11, _map$12, _key$12, buildFile, buildFunc, declareLabels, setOffsets, fillDelta, fillLabels, queryPkg, init, resolveSymbol, linkSymbol, makeFuncObj, buildPkgScope, buildLib, varSize, varAlign, buildVar, newBuilder, parseDataStr, isJump, inBrRange, parseInst, makeInstBr, parseInstBr, parseImu, parseIms, parseImm, makeInstImm, parseInstImm, parseInstJmp, parseShift, makeInstReg, parseInstReg, makeInstSys, parseInstSys, lexAsm8, newLexer, lexComment, lexLineComment, lexBlockComment, isOperandChar, isKeyword, lexOperand, digitVal, lexEscape, lexString, newLib, newPkg, argCount, parseFile, parseFuncStmts, parseFunc, parseOps, parseFuncStmt, isLabelStart, isLabel, parseLabel, parseReg, isSymbol, isIdent, isPackName, parseSym, parseVarStmts, parseVar, parseArgs, parseData, parseVarStmt, newParser, typeStr, BuildSingleFile, newStmtLexer, newSymScope, newSymTable, symStr, isPublic;
+	var $pkg = {}, io = $packages["io"], lex8 = $packages["lonnie.io/e8vm/lex8"], link8 = $packages["lonnie.io/e8vm/link8"], bytes = $packages["bytes"], strconv = $packages["strconv"], unicode = $packages["unicode"], strings = $packages["strings"], builder, file, funcDecl, funcStmt, inst, lib, pkg, instParse, instParsers, parser, stmtLexer, symScope, symTabel, symbol, varDecl, varStmt, insts, opBrMap, opImsMap, opMemMap, opImuMap, opImmMap, opShiftMap, opReg3Map, opReg2Map, opFloatMap, opSysMap, opSys1Map, regNameMap, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, _map$11, _key$11, _map$12, _key$12, buildFile, buildFunc, declareLabels, setOffsets, fillDelta, fillLabels, queryPkg, init, resolveSymbol, linkSymbol, makeFuncObj, buildPkgScope, buildLib, varSize, varAlign, buildVar, newBuilder, parseDataHex, parseDataStr, isJump, inBrRange, parseInst, makeInstBr, parseInstBr, parseImu, parseIms, parseImm, makeInstImm, parseInstImm, parseInstJmp, parseShift, makeInstReg, parseInstReg, makeInstSys, parseInstSys, lexAsm8, newLexer, lexComment, lexLineComment, lexBlockComment, isOperandChar, isKeyword, lexOperand, digitVal, lexEscape, lexString, newLib, newPkg, argCount, parseFile, parseFuncStmts, parseFunc, parseOps, parseFuncStmt, isLabelStart, isLabel, parseLabel, parseReg, isSymbol, isIdent, isPackName, parseSym, parseVarStmts, parseVar, parseArgs, parseData, parseVarStmt, newParser, typeStr, BuildSingleFile, newStmtLexer, newSymScope, newSymTable, symStr, isPublic;
 	builder = $pkg.builder = $newType(0, $kindStruct, "asm8.builder", "builder", "lonnie.io/e8vm/asm8", function(errs_, scope_, curPkg_, hasError_) {
 		this.$val = this;
 		this.errs = errs_ !== undefined ? errs_ : ($ptrType(lex8.ErrorList)).nil;
@@ -19975,6 +19975,27 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		b.hasError = false;
 	};
 	builder.prototype.clearErr = function() { return this.$val.clearErr(); };
+	parseDataHex = function(p, args) {
+		var buf, _ref, _i, arg, _tuple, b, e;
+		buf = new bytes.Buffer.Ptr();
+		_ref = args;
+		_i = 0;
+		while (_i < _ref.$length) {
+			arg = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			if (!((arg.Type === 2))) {
+				p.err(arg.Pos, "expect operand, got %s", new ($sliceType($emptyInterface))([new $String(typeStr(arg.Type))]));
+				return [($sliceType($Uint8)).nil, 0];
+			}
+			_tuple = strconv.ParseUint(arg.Lit, 16, 8); b = _tuple[0]; e = _tuple[1];
+			if (!($interfaceIsEqual(e, $ifaceNil))) {
+				p.err(arg.Pos, "%s", new ($sliceType($emptyInterface))([e]));
+				return [($sliceType($Uint8)).nil, 0];
+			}
+			buf.WriteByte((b.$low << 24 >>> 24));
+			_i++;
+		}
+		return [buf.Bytes(), 0];
+	};
 	parseDataStr = function(p, args) {
 		var buf, _ref, _i, arg, _tuple, s, e;
 		buf = new bytes.Buffer.Ptr();
@@ -19983,7 +20004,7 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		while (_i < _ref.$length) {
 			arg = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
 			if (!((arg.Type === 3))) {
-				p.err(arg.Pos, "expect string, got %s", new ($sliceType($emptyInterface))([new $Int(arg.Type)]));
+				p.err(arg.Pos, "expect string, got %s", new ($sliceType($emptyInterface))([new $String(typeStr(arg.Type))]));
 				return [($sliceType($Uint8)).nil, 0];
 			}
 			_tuple = strconv.Unquote(arg.Lit); s = _tuple[0]; e = _tuple[1];
@@ -20937,6 +20958,8 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 		_ref = t.Lit;
 		if (_ref === "str") {
 			return parseDataStr(p, args);
+		} else if (_ref === "x") {
+			return parseDataHex(p, args);
 		} else if (_ref === "u32" || _ref === "i32" || _ref === "u8" || _ref === "i8" || _ref === "byte" || _ref === "f32") {
 			p.err(t.Pos, "data type %s not implemented", new ($sliceType($emptyInterface))([new $String(t.Lit)]));
 			return [($sliceType($Uint8)).nil, 0];
@@ -21352,7 +21375,7 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 	return $pkg;
 })();
 $packages["lonnie.io/e8vm/dasm8"] = (function() {
-	var $pkg = {}, fmt = $packages["fmt"], binary = $packages["encoding/binary"], bytes = $packages["bytes"], Line, opBrMap, opImsMap, opMemMap, opImuMap, opImu2Map, opJmpMap, opShiftMap, opReg3Map, opFloatMap, opSysMap, opSys1Map, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$5, _key$5, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, Dasm, NewLine, instBr, instImm, instJmp, instReg, instSys, printables, newLine, regStr;
+	var $pkg = {}, fmt = $packages["fmt"], binary = $packages["encoding/binary"], bytes = $packages["bytes"], Line, opBrMap, opImsMap, opMemMap, opImuMap, opImu2Map, opJmpMap, opShiftMap, opReg3Map, opFloatMap, opSysMap, opSys1Map, enc, _map, _key, _map$1, _key$1, _map$2, _key$2, _map$3, _key$3, _map$4, _key$4, _map$5, _key$5, _map$6, _key$6, _map$7, _key$7, _map$8, _key$8, _map$9, _key$9, _map$10, _key$10, Dasm, NewLine, instBr, instImm, instJmp, instReg, instSys, printables, newLine, regStr;
 	Line = $pkg.Line = $newType(0, $kindStruct, "dasm8.Line", "Line", "lonnie.io/e8vm/dasm8", function(Addr_, Inst_, Str_, IsJump_, To_, ToLine_) {
 		this.$val = this;
 		this.Addr = Addr_ !== undefined ? Addr_ : 0;
@@ -21538,28 +21561,31 @@ $packages["lonnie.io/e8vm/dasm8"] = (function() {
 		ret.Str = s;
 		return ret;
 	};
-	printables = function(inst) {
-		var ret, i, r;
+	printables = function(bs) {
+		var ret, _ref, _i, b, r;
 		ret = "";
-		i = 0;
-		while (i < 4) {
-			r = (((inst & 255) >>> 0) >> 0);
-			inst = inst >>> 8 >>> 0;
+		_ref = bs;
+		_i = 0;
+		while (_i < _ref.$length) {
+			b = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			r = (b >> 0);
 			if (r >= 32 && r <= 126) {
-				ret = $encodeRune(r) + ret;
+				ret = ret + ($encodeRune(r));
 			} else {
-				ret = "." + ret;
+				ret = ret + (".");
 			}
-			i = i + (1) >> 0;
+			_i++;
 		}
 		return ret;
 	};
 	Line.Ptr.prototype.String = function() {
-		var line, ret;
+		var line, ret, buf;
 		line = this;
 		ret = new bytes.Buffer.Ptr();
-		fmt.Fprintf(ret, "%08x:  %08x", new ($sliceType($emptyInterface))([new $Uint32(line.Addr), new $Uint32(line.Inst)]));
-		fmt.Fprintf(ret, "   %s", new ($sliceType($emptyInterface))([new $String(printables(line.Inst))]));
+		buf = ($arrayType($Uint8, 4)).zero(); $copy(buf, ($arrayType($Uint8, 4)).zero(), ($arrayType($Uint8, 4)));
+		enc.PutUint32(new ($sliceType($Uint8))(buf), line.Inst);
+		fmt.Fprintf(ret, "%08x:  % 02x", new ($sliceType($emptyInterface))([new $Uint32(line.Addr), new ($sliceType($Uint8))(buf)]));
+		fmt.Fprintf(ret, "   %s", new ($sliceType($emptyInterface))([new $String(printables(new ($sliceType($Uint8))(buf)))]));
 		fmt.Fprintf(ret, "    %s", new ($sliceType($emptyInterface))([new $String(line.Str)]));
 		if (line.IsJump) {
 			fmt.Fprintf(ret, "   // %08x", new ($sliceType($emptyInterface))([new $Uint32(line.To)]));
@@ -21616,6 +21642,7 @@ $packages["lonnie.io/e8vm/dasm8"] = (function() {
 		opFloatMap = (_map$8 = new $Map(), _key$8 = 0, _map$8[_key$8] = { k: _key$8, v: "fadd" }, _key$8 = 1, _map$8[_key$8] = { k: _key$8, v: "fsub" }, _key$8 = 2, _map$8[_key$8] = { k: _key$8, v: "fmul" }, _key$8 = 3, _map$8[_key$8] = { k: _key$8, v: "fdiv" }, _key$8 = 4, _map$8[_key$8] = { k: _key$8, v: "fint" }, _map$8);
 		opSysMap = (_map$9 = new $Map(), _key$9 = 64, _map$9[_key$9] = { k: _key$9, v: "halt" }, _key$9 = 65, _map$9[_key$9] = { k: _key$9, v: "syscall" }, _key$9 = 66, _map$9[_key$9] = { k: _key$9, v: "usermod" }, _key$9 = 68, _map$9[_key$9] = { k: _key$9, v: "iret" }, _map$9);
 		opSys1Map = (_map$10 = new $Map(), _key$10 = 67, _map$10[_key$10] = { k: _key$10, v: "vtable" }, _key$10 = 69, _map$10[_key$10] = { k: _key$10, v: "cpuid" }, _map$10);
+		enc = new binary.littleEndian.Ptr(); $copy(enc, binary.LittleEndian, binary.littleEndian);
 		/* */ } return; } }; $f.$blocking = true; return $f;
 	};
 	return $pkg;
