@@ -20975,7 +20975,8 @@ $packages["lonnie.io/e8vm/asm8"] = (function() {
 					ret.Vars = $append(ret.Vars, v);
 				}
 			} else if (p.seeKeyword("const")) {
-				$panic(new $String("todo"));
+				p.err(p.t.Pos, "const support not implemented yet", new sliceType$3([]));
+				p.skipErrStmt();
 			} else {
 				p.err(p.t.Pos, "expect top-declaration: func, var or const", new sliceType$3([]));
 				return ptrType$14.nil;
