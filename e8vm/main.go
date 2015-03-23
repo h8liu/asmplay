@@ -11,6 +11,7 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 
 	"lonnie.io/e8vm/arch8"
+	"lonnie.io/e8vm/conv"
 	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/dasm8"
 	"lonnie.io/e8vm/lex8"
@@ -42,7 +43,7 @@ func run(bs []byte, out io.Writer) (int, error) {
 
 	m := arch8.NewMachine(uint32(1<<30), 1)
 
-	e := m.LoadImage(r, arch8.InitPC)
+	e := m.LoadImage(r, conv.InitPC)
 	if e != nil {
 		return 0, e
 	}
@@ -71,7 +72,7 @@ func _compile(file, code string) (dump, errs, out string) {
 		return "", errOut.String(), ""
 	}
 
-	lines := dasm8.Dasm(bs, arch8.InitPC)
+	lines := dasm8.Dasm(bs, conv.InitPC)
 	for _, line := range lines {
 		fmt.Fprintf(dasm, `%s` + "\n",
 			template.HTMLEscapeString(line.String()),
